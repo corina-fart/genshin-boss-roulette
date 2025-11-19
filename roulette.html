@@ -1179,6 +1179,8 @@ function resetBossRotation() {
 
 // --- CHARACTER ROLL LOGIC (MODIFIED TO USE IMAGE MAP) ---
 
+// --- CHARACTER ROLL LOGIC (MODIFIED FOR POOL REMOVAL ON ROLL) ---
+
 function randomizeCharacters(count) {
     // PREREQUISITE CHECK
     if (!isExclusionGenerated || !isBanCategoryRolled) {
@@ -1200,14 +1202,27 @@ function randomizeCharacters(count) {
         return;
     }
 
-    // 2. Select random characters without replacement
+    // 2. Select random characters and REMOVE THEM FROM THE MAIN POOL
+    let newSquad = [];
+    
+    // Create a temporary working copy of the pool (names only)
     let tempPool = [...characterPool];
+    
+    // Character names selected in this roll
+    let namesToSelect = []; 
+
     for (let i = 0; i < count; i++) {
         const randomIndex = Math.floor(Math.random() * tempPool.length);
-        const charName = tempPool.splice(randomIndex, 1)[0];
-        currentRolledSquad.push(charName);
+        const charName = tempPool.splice(randomIndex, 1)[0]; // Remove from temp pool
+        namesToSelect.push(charName);
     }
-
+    
+    // 🚨 KEY FIX: Remove the selected characters from the actual characterPool
+    updateCharacterPool(namesToSelect); 
+    
+    // Set the global squad state to the newly selected characters
+    currentRolledSquad = namesToSelect; 
+    
     // 3. Render the new squad with actual images
     currentRolledSquad.forEach(name => {
         const imagePath = CHAR_IMAGE_MAP[name] || CHAR_IMAGE_MAP["DEFAULT_PATH"];
@@ -1264,9 +1279,10 @@ function rerollCharacters() {
     }
 
     // 1. Return the current squad to the main pool (characterPool)
+    // The currentRolledSquad contains the 8 characters that were removed from the pool in randomizeCharacters().
     const returnedChars = [...currentRolledSquad];
     characterPool.push(...returnedChars);
-    currentRolledSquad.length = 0; // Clear the old squad
+    currentRolledSquad.length = 0; // Clear the old squad state
     updateCharacterPoolStatus();
 
     // 2. Inform the user and roll a new squad
@@ -1274,6 +1290,7 @@ function rerollCharacters() {
     selectionMessage.style.display = 'none';
     document.getElementById('btn-confirm-usage').disabled = true;
 
+    // 3. Roll the new squad. This function will now select 8 new characters AND remove them from the pool.
     randomizeCharacters(8); 
 }
 
@@ -1288,9 +1305,16 @@ function confirmUsedCharacters() {
         return;
     }
 
-    // Remove selected characters from the main pool
-    updateCharacterPool(selectedChars);
+    // The selected characters are ALREADY removed from the pool by randomizeCharacters()
+    // The logic here only confirms the run and prepares for the next roll.
+    // However, we need to return the UNUSED characters (4 of them) back to the pool.
+    
+    const unusedChars = currentRolledSquad.filter(char => !selectedChars.includes(char));
 
+    // Return UNUSED characters to the main pool
+    characterPool.push(...unusedChars);
+    updateCharacterPoolStatus();
+    
     // Clear the character display and squad
     currentRolledSquad.length = 0;
     document.getElementById('character-display').innerHTML = '<p>Character usage confirmed. Click "Roll Characters" to generate the next squad.</p>';
@@ -1301,7 +1325,6 @@ function confirmUsedCharacters() {
     document.getElementById('btn-reroll-chars').style.display = 'none';
     document.getElementById('btn-confirm-usage').disabled = true;
 }
-
 function generateExclusionList(count) {
     // Only generate if the exclusion list is empty
     if (exclusionList.length > 0) return;
