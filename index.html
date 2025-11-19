@@ -198,55 +198,55 @@ text-align: center;
 
 /* Style for character names in the Exclusion List (text-only interaction) */
 #exclusion-list .char-name.selected {
-    background-color: #d1e3ff; /* Lighter background on selection */
-    border: 2px solid #6699ff; /* Blue border on selection */
+    background-color: #d1e3ff; /* Lighter background on selection */
+    border: 2px solid #6699ff; /* Blue border on selection */
 }
 
 /* NEW: Card Wrapper for Rolled Characters (Name + Image) */
 .character-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px; /* space between name and image */
-    cursor: pointer;
-    padding: 5px;
-    border-radius: 8px;
-    border: 2px solid transparent; /* default transparent border */
-    transition: all 0.2s ease-in-out;
-    background-color: rgba(255, 255, 255, 0.3); /* Slight card background */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px; /* space between name and image */
+    cursor: pointer;
+     padding: 5px;
+    border-radius: 8px;
+    border: 2px solid transparent; /* default transparent border */
+    transition: all 0.2s ease-in-out;
+    background-color: rgba(255, 255, 255, 0.3); /* Slight card background */
 }
 
 /* Fix char-name width inside the card for uniform look */
 .character-card .char-name {
-    width: 90px;
+     width: 90px;
 }
 
 /* NEW: Image Placeholder Style (100x100px as requested) */
 .char-image-placeholder {
-    width: 100px;
-    height: 100px;
-    background-color: #e0e0e0; /* Gray background (only visible if image fails to load) */
-    border-radius: 24px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 0.7em;
-    color: #666;
-    overflow: hidden; 
-    box-sizing: border-box; 
+    width: 100px;
+    height: 100px;
+    background-color: #e0e0e0; /* Gray background (only visible if image fails to load) */
+    border-radius: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.7em;
+    color: #666;
+    overflow: hidden; 
+    box-sizing: border-box; 
 }
 /* Ensure the image inside the placeholder covers the area */
 .char-image-placeholder img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Ensures the image fills the container without distortion (cropping if necessary) */
-    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures the image fills the container without distortion (cropping if necessary) */
+    display: block;
 }
 
 
 /* Style for the card when selected (clicked) */
 .character-card.selected {
-    background-color: rgba(125, 177, 255, 0.7);
+    background-color: rgba(125, 177, 255, 0.7);
 }
 
 
@@ -490,52 +490,52 @@ font-size: 1.5em;
 /* --- MOBILE LAYOUT: 1-Column Stacking ---*/
 /* ======================================= */
 @media (max-width: 800px) {
-    /* 1. Reset Main Grid to Single Column */
-    .page-layout {
-        /* Force a single column for all content */
-        grid-template-columns: 1fr;
-        /* Stack sections vertically in the desired order */
-        grid-template-areas:
-            "boss"
-            "char-roll"
-            "left"
-            "sidebar";
-        /* Reduce overall spacing */
-        gap: 16px;
-        padding: 10px;
-    }
+    /* 1. Reset Main Grid to Single Column */
+    .page-layout {
+    /* Force a single column for all content */
+         grid-template-columns: 1fr;
+    /* Stack sections vertically in the desired order */
+        grid-template-areas:
+            "boss"
+            "char-roll"
+            "left"
+            "sidebar";
+        /* Reduce overall spacing */
+         gap: 16px;
+         padding: 10px;
+     }
 
-    /* 2. Adjust Sidebar: Allow content to scroll normally, disable fixed max-height */
-    .sidebar {
-        max-height: none; 
-        overflow-y: visible;
-    }
+     /* 2. Adjust Sidebar: Allow content to scroll normally, disable fixed max-height */
+    .sidebar {
+        max-height: none; 
+        overflow-y: visible;
+    }
 
-    /* 3. Adjust Fixed Reset Button for better mobile finger-space */
-    #btn-reset-all {
-        top: 5px;
-        left: 5px;
-        padding: 6px 10px;
-        font-size: 0.8em;
-    }
-    
-    /* 4. Reduce Card Padding */
-    .card {
-        padding: 20px;
-    }
-    
-    /* 5. Adjust Button Group to Stack for small width */
-    .button-group {
-        flex-direction: column;
-        gap: 10px;
-    }
-    
-    /* 6. Ensure wide content elements are handled */
-    .controls-area {
-        flex-direction: column;
-        gap: 15px;
-        align-items: flex-start;
-    }
+    /* 3. Adjust Fixed Reset Button for better mobile finger-space */
+    #btn-reset-all {
+        top: 5px;
+        left: 5px;
+        padding: 6px 10px;
+        font-size: 0.8em;
+    }
+
+    /* 4. Reduce Card Padding */
+    .card {
+        padding: 20px;
+    }
+
+    /* 5. Adjust Button Group to Stack for small width */
+    .button-group {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    /* 6. Ensure wide content elements are handled */
+    .controls-area {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
 }
 </style>
 </head>
