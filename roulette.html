@@ -993,7 +993,7 @@ function runCategoryBan() {
 // --- CHARACTER POOL MANAGEMENT ---
 
 function updateCharacterPoolStatus() {
-document.getElementById('current-pool-status').textContent = `Total Characters Available: ${characterPool.length}`;
+    document.getElementById('current-pool-status').textContent = `Total Characters Available: ${characterPool.length}`;
 }
 
 function updateCharacterPool(namesToRemove) {
@@ -1003,12 +1003,21 @@ updateCharacterPoolStatus();
 }
 
 function displayExclusionList() {
-const listElement = document.getElementById('exclusion-list');
-listElement.innerHTML = ''; // Clear existing list
+    const listElement = document.getElementById('exclusion-list');
+    listElement.innerHTML = ''; 
 
-if (exclusionList.length === 0) {
-listElement.innerHTML = '<p style="color: #666666; font-weight: normal;">Click the button to generate 6 characters to exclude.</p>';
-return;
+    if (exclusionList.length === 0) {
+        listElement.innerHTML = '<p style="color: #666666; font-weight: normal;">Click the button to generate 6 characters to exclude.</p>';
+        return;
+    }
+
+    exclusionList.forEach(name => {
+        const charSpan = document.createElement('span');
+        charSpan.className = 'char-name';
+        charSpan.textContent = name;
+        charSpan.onclick = () => charSpan.classList.toggle('selected');
+        listElement.appendChild(charSpan);
+    });
 }
 
 exclusionList.forEach(name => {
@@ -1019,16 +1028,12 @@ charSpan.textContent = name;
 charSpan.onclick = () => charSpan.classList.toggle('selected');
 listElement.appendChild(charSpan);
 });
-}
 
 function resetCharacterPool() {
-// Rebuild the pool from the original list.
-// FIX: Use a Set to automatically remove any duplicate entries from the 
-// 'characters' array, ensuring a clean pool and fixing the reported bug.
-characterPool = Array.from(new Set(characters)); 
-exclusionList.length = 0;
-updateCharacterPoolStatus();
-displayExclusionList();
+    characterPool = Array.from(new Set(characters)); 
+    exclusionList.length = 0;
+    updateCharacterPoolStatus();
+    displayExclusionList();
 }
 
 
@@ -1203,12 +1208,9 @@ function randomizeCharacters(count) {
     }
 
     // 2. Select random characters and REMOVE THEM FROM THE MAIN POOL
-    let newSquad = [];
     
     // Create a temporary working copy of the pool (names only)
     let tempPool = [...characterPool];
-    
-    // Character names selected in this roll
     let namesToSelect = []; 
 
     for (let i = 0; i < count; i++) {
@@ -1217,49 +1219,39 @@ function randomizeCharacters(count) {
         namesToSelect.push(charName);
     }
     
-    // 🚨 KEY FIX: Remove the selected characters from the actual characterPool
-    updateCharacterPool(namesToSelect); 
+    // 🚨 FIX STEP 1: Remove the selected characters from the actual characterPool
+    // This is crucial: the selected 8 must leave the pool immediately.
+    characterPool = characterPool.filter(char => !namesToSelect.includes(char));
+    updateCharacterPoolStatus(); // Final update to reflect the removal
     
-    // Set the global squad state to the newly selected characters
+    // Set the global squad state
     currentRolledSquad = namesToSelect; 
     
     // 3. Render the new squad with actual images
     currentRolledSquad.forEach(name => {
         const imagePath = CHAR_IMAGE_MAP[name] || CHAR_IMAGE_MAP["DEFAULT_PATH"];
-
-        // Create the card wrapper
         const charCard = document.createElement('div');
         charCard.className = 'character-card';
 
-        // Create the name span (char-name)
         const charSpan = document.createElement('span');
         charSpan.className = 'char-name';
         charSpan.textContent = name;
         
-        // Create the image placeholder container
         const imgContainer = document.createElement('div');
         imgContainer.className = 'char-image-placeholder';
         
-        // Create the actual image element
         const imgElement = document.createElement('img');
         imgElement.src = imagePath;
         imgElement.alt = name;
         
-        // Append the image to the container
         imgContainer.appendChild(imgElement);
-
-        // Add click handler to the card wrapper
         charCard.onclick = () => charCard.classList.toggle('selected');
-        
-        // Assemble the card
         charCard.appendChild(charSpan);
         charCard.appendChild(imgContainer); 
-        
-        // Append to display
         display.appendChild(charCard);
     });
 
-    // 4. Update button visibility (Hide Roll, Show Reroll, Enable Confirm)
+    // 4. Update button visibility
     document.getElementById('btn-roll-chars').style.display = 'none';
     document.getElementById('btn-reroll-chars').style.display = 'inline-block';
     document.getElementById('btn-confirm-usage').disabled = false;
@@ -1279,23 +1271,24 @@ function rerollCharacters() {
     }
 
     // 1. Return the current squad to the main pool (characterPool)
-    // The currentRolledSquad contains the 8 characters that were removed from the pool in randomizeCharacters().
     const returnedChars = [...currentRolledSquad];
     characterPool.push(...returnedChars);
     currentRolledSquad.length = 0; // Clear the old squad state
-    updateCharacterPoolStatus();
+    
+    // 🚨 FIX STEP 2: REMOVED the intermediate update here. 
+    // The pool count is now only updated once at the end of randomizeCharacters.
 
     // 2. Inform the user and roll a new squad
     display.innerHTML = '<p>Current squad returned to pool. Rolling new squad...</p>';
     selectionMessage.style.display = 'none';
     document.getElementById('btn-confirm-usage').disabled = true;
 
-    // 3. Roll the new squad. This function will now select 8 new characters AND remove them from the pool.
+    // 3. Roll the new squad. This function selects 8 new characters AND removes them from the pool.
+    // Net Pool Change: +8 (return) - 8 (new roll) = 0.
     randomizeCharacters(8); 
 }
 
 function confirmUsedCharacters() {
-    // UPDATED: Look for the name inside the selected card (.character-card.selected)
     const selectedChars = Array.from(document.querySelectorAll('#character-display .character-card.selected .char-name')).map(el => el.textContent);
     const selectionMessage = document.getElementById('selection-message');
 
@@ -1305,13 +1298,11 @@ function confirmUsedCharacters() {
         return;
     }
 
-    // The selected characters are ALREADY removed from the pool by randomizeCharacters()
-    // The logic here only confirms the run and prepares for the next roll.
-    // However, we need to return the UNUSED characters (4 of them) back to the pool.
-    
+    // Identify the characters that were *not* used in the run.
     const unusedChars = currentRolledSquad.filter(char => !selectedChars.includes(char));
 
-    // Return UNUSED characters to the main pool
+    // 🚨 FIX STEP 3: Return UNUSED characters to the main pool.
+    // The USED characters (selectedChars) remain out of the pool as permanent exclusions.
     characterPool.push(...unusedChars);
     updateCharacterPoolStatus();
     
@@ -1320,11 +1311,13 @@ function confirmUsedCharacters() {
     document.getElementById('character-display').innerHTML = '<p>Character usage confirmed. Click "Roll Characters" to generate the next squad.</p>';
     selectionMessage.style.display = 'none';
 
-    // Reset button visibility (Show Roll, Hide Reroll, Disable Confirm)
+    // Reset button visibility 
     document.getElementById('btn-roll-chars').style.display = 'inline-block';
     document.getElementById('btn-reroll-chars').style.display = 'none';
     document.getElementById('btn-confirm-usage').disabled = true;
 }
+
+// ... (All other boss and initialization functions remain the same) ...
 function generateExclusionList(count) {
     // Only generate if the exclusion list is empty
     if (exclusionList.length > 0) return;
