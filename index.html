@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1444,3 +1445,1451 @@ document.addEventListener('DOMContentLoaded', initializeApp);
 
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Genshin Boss and Character Randomizer</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+<style>
+/* General Body Styling - Grayscale Background */
+body {
+font-family: 'Inter', sans-serif;
+display: flex;
+justify-content: center;
+align-items: flex-start;
+min-height: 100vh;
+margin: 0;
+padding-top: 50px;
+/* Subtle blue-gray background to make the blur noticeable */
+background-color: #e6e9f0;
+background-image: linear-gradient(135deg, #f0f0f0 0%, #d8e0e8 100%);
+color: #000; /* ALL TEXT SET TO BLACK */
+}
+
+/* --- FIXED RESET BUTTON (Darkest Blue for Severity) --- */
+#btn-reset-all {
+position: fixed;
+top: 10px;
+left: 10px;
+z-index: 100;
+background-color: #0a3a7c; /* Very Dark Blue */
+color: white;
+padding: 8px 15px;
+min-height: 42px; /* Unified button height */
+font-size: 0.9em;
+border-radius: 6px;
+cursor: pointer;
+border: none;
+transition: background-color 0.3s;
+}
+#btn-reset-all:hover {
+background-color: #1a73e8; /* Lighter on hover */
+}
+
+/* --- LAYOUT: MAIN GRID CONTAINER (Increased Gap) --- */
+.page-layout {
+display: grid;
+grid-template-columns: 2fr 1fr;
+grid-template-areas:
+"boss boss"
+"char-roll char-roll"
+"left sidebar";
+gap: 24px;
+max-width: 1200px;
+width: 95%;
+padding: 24px;
+}
+
+/* --- CARD STYLING (Frosted Glass Effect - Default White) --- */
+.card {
+/* FROSTED GLASS EFFECT */
+background-color: rgba(255, 255, 255, 0.5);
+backdrop-filter: blur(12px);
+-webkit-backdrop-filter: blur(12px);
+padding: 32px;
+border-radius: 12px;
+text-align: left;
+}
+
+/* --- GRID AREA DEFINITIONS & Background Overrides --- */
+.boss-randomizer {
+grid-area: boss;
+margin-bottom: 20px;
+}
+
+.full-width-character-selector {
+grid-area: char-roll;
+border-top: 2px solid #cccccc;
+padding-top: 32px;
+margin-top: -10px;
+}
+
+.left-column {
+grid-area: left;
+/* Light blue tinted background */
+background-color: rgba(200, 220, 240, 0.5);
+}
+
+.sidebar {
+grid-area: sidebar;
+overflow-y: auto;
+max-height: 85vh;
+/* Light blue tinted background */
+background-color: rgba(200, 220, 240, 0.5);
+}
+
+/* Applying card class to all major sections */
+.boss-randomizer,
+.full-width-character-selector,
+.left-column,
+.sidebar {
+box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* --- HEADER AND DIVIDER STYLING (Increased Spacing) --- */
+.boss-randomizer > h1,
+.boss-randomizer > h2,
+.full-width-character-selector > h1,
+.full-width-character-selector > h2,
+.left-column > h2,
+.category-ban-randomizer h2,
+.category-ban-randomizer h3,
+.sidebar h2 {
+border-bottom: 2px solid #e0e0e0;
+padding-bottom: 16px;
+margin-bottom: 30px;
+margin-top: 0;
+text-align: left;
+color: #000; /* Ensure headers are black */
+}
+
+/* Ensure main H1s have their correct color and margin */
+.boss-randomizer h1 {
+color: #000;
+}
+
+/* Override the general H2 style for the internal Scoring H2 */
+.scoring-section h2 {
+border-bottom: none;
+padding-bottom: 0;
+margin-bottom: 10px;
+margin-top: 0;
+color: #000;
+}
+
+/* Sidebar H2 now uses a medium-dark gray */
+.sidebar h2 {
+color: #333;
+font-size: 1.3em;
+}
+
+/* --- LIST STYLING --- */
+#rolled-list {
+list-style-type: decimal;
+padding-left: 20px;
+margin: 0;
+}
+
+#rolled-list li {
+padding: 8px 0;
+font-size: 0.95em;
+border-bottom: 1px dotted rgba(153, 153, 153, 0.5);
+}
+
+/* --- Scoring Section (Nested Frosted Glass) --- */
+.scoring-section {
+margin-top: 30px;
+padding: 20px;
+border-radius: 8px;
+/* NESTED FROSTED GLASS EFFECT */
+background-color: rgba(240, 240, 240, 0.5);
+backdrop-filter: blur(8px);
+-webkit-backdrop-filter: blur(8px);
+text-align: center;
+}
+
+.score-info {
+display: flex;
+justify-content: space-around;
+font-weight: bold;
+font-size: 1.1em;
+margin-bottom: 15px;
+color: #000;
+}
+
+.score-controls {
+display: flex;
+justify-content: center;
+gap: 25px;
+padding-top: 15px;
+border-top: 1px solid #cccccc;
+}
+
+/* --- Character Sections --- */
+
+.char-name {
+background-color: #cccccc;
+color: #333;
+padding: 5px 10px; /* Adjusted padding */
+border-radius: 4px;
+font-size: 0.85em; /* Adjusted font size */
+font-weight: bold;
+cursor: pointer;
+transition: background-color 0.2s, color 0.2s, border 0.2s;
+border: none;
+width: auto; /* Allow auto width for exclusion list */
+text-align: center;
+}
+
+/* Style for character names in the Exclusion List (text-only interaction) */
+#exclusion-list .char-name.selected {
+    background-color: #d1e3ff; /* Lighter background on selection */
+    border: 2px solid #6699ff; /* Blue border on selection */
+}
+
+/* NEW: Card Wrapper for Rolled Characters (Name + Image) */
+.character-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px; /* space between name and image */
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 8px;
+    border: 2px solid transparent; /* default transparent border */
+    transition: all 0.2s ease-in-out;
+    background-color: rgba(255, 255, 255, 0.3); /* Slight card background */
+}
+
+/* Fix char-name width inside the card for uniform look */
+.character-card .char-name {
+    width: 90px;
+}
+
+/* NEW: Image Placeholder Style (100x100px as requested) */
+.char-image-placeholder {
+    width: 100px;
+    height: 100px;
+    background-color: #e0e0e0; /* Gray background (only visible if image fails to load) */
+    border-radius: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.7em;
+    color: #666;
+    overflow: hidden; 
+    box-sizing: border-box; 
+}
+/* Ensure the image inside the placeholder covers the area */
+.char-image-placeholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures the image fills the container without distortion (cropping if necessary) */
+    display: block;
+}
+
+
+/* Style for the card when selected (clicked) */
+.character-card.selected {
+    background-color: rgba(125, 177, 255, 0.7);
+}
+
+
+/* Exclusion/Ban List Container (Nested Frosted Glass) */
+#exclusion-list, #boss-ban-list {
+display: flex;
+flex-wrap: wrap;
+justify-content: flex-start;
+gap: 8px;
+min-height: 60px;
+margin-bottom: 20px;
+padding: 15px;
+border-radius: 8px;
+/* NESTED FROSTED GLASS EFFECT */
+background-color: rgba(255, 255, 255, 0.5);
+}
+#exclusion-list p, #boss-ban-list p {
+margin: 0;
+color: #ffffff;
+}
+
+/* Character Display Area - uses flex for the 8 characters */
+#character-display {
+display: flex;
+flex-wrap: wrap;
+justify-content: center;
+gap: 12px;
+margin-bottom: 25px;
+min-height: 80px;
+padding: 15px;
+border-radius: 8px;
+}
+#character-display p {
+padding: 10px 0;
+margin: 0;
+color: #333;
+}
+/* ... rest of the existing CSS ... */
+
+/* Boss Display elements - kept centered */
+#boss-display {
+text-align: center;
+margin-bottom: 30px;
+}
+
+#parameters-area {
+text-align: center;
+width: 100%;
+padding: 10px 0;
+color: #333;
+}
+
+#boss-parameters-title {
+margin-top: 15px;
+margin-bottom: 5px;
+font-weight: bold;
+}
+#boss-parameters-description {
+margin-top: 5px;
+margin-bottom: 0;
+padding: 0 10px;
+color: #666;
+font-style: italic;
+}
+
+/* Input/Status Controls */
+.controls-area {
+display: flex;
+justify-content: space-around;
+align-items: center;
+margin-bottom: 30px;
+padding-bottom: 15px;
+border-bottom: 1px solid #ccc;
+color: #000;
+}
+.control-group {
+display: flex;
+align-items: center;
+gap: 8px;
+}
+#boss-rotation-input {
+width: 50px;
+padding: 5px;
+border-radius: 4px;
+border: 1px solid #ccc;
+text-align: center;
+color: #000;
+}
+
+/* General Button Styling: All buttons inherit this base style */
+.btn-tertiary, .btn-tertiary-blue, .btn-primary, .btn-secondary, .btn-reset {
+padding: 10px 25px; /* Unified vertical padding (12px -> 10px) */
+min-height: 42px; /* Unified button height */
+font-size: 1em;
+border-radius: 6px;
+cursor: pointer;
+border: none;
+transition: background-color 0.3s;
+color: white; /* Ensure text is white on colored buttons */
+}
+
+/* Button Styling for Roll Boss (Primary - Dark Blue) */
+.btn-primary {
+background-color: #215ead;
+}
+
+.btn-primary:hover {
+background-color: #2d4875;
+}
+
+/* Button Styling for Reroll Boss (Secondary - Medium Blue) */
+.btn-secondary {
+background-color: #c9deff;
+color: rgb(0, 0, 0); /* Ensure text is white */
+}
+
+.btn-secondary:hover {
+background-color: #6699ff;
+}
+
+/* General Tertiary Button Styling (Light Blue) */
+.btn-tertiary, .btn-tertiary-blue {
+background-color: #a0c3ff;
+color: #000000; /* Dark text for light background */
+font-weight: 600;
+}
+.btn-tertiary:hover, .btn-tertiary-blue:hover {
+background-color: #c4d9ff;
+}
+
+/* Button for confirming used characters (Reusing Primary style) */
+#btn-confirm-usage {
+background-color: #ffffff;
+color: rgb(0, 0, 0);
+font-size: 1.1em;
+margin-top: 15px;
+}
+
+/* Boss Roll Button Group */
+.button-group {
+display: flex;
+gap: 20px;
+justify-content: center;
+margin-top: 25px;
+margin-bottom: 25px;
+}
+
+/* Reset Button Styling (Medium-Light Blue) */
+.btn-reset {
+background-color: #ffffff;
+color: #000000; /* Dark text for light background */
+}
+.btn-reset:hover {
+background-color: #a0c3ff;
+}
+
+/* New styling for the combined reset/reroll button */
+#btn-reset-reroll {
+padding: 10px 20px;
+font-size: 1em;
+margin-top: 15px;
+margin-bottom: 25px;
+display: block;
+margin-left: auto;
+margin-right: auto;
+}
+
+#selection-message {
+color: #e64a19; /* Use a red tone for errors */
+font-weight: bold;
+margin-top: 15px;
+display: none;
+text-align: center;
+}
+
+/* Flash color on new boss roll */
+.boss-randomizer #boss-display.flash {
+background-color: rgba(255, 255, 255, 0.7);
+}
+
+/* --- Modal Styling --- */
+.modal-overlay {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(0, 0, 0, 0.7);
+display: flex;
+justify-content: center;
+align-items: center;
+z-index: 200;
+opacity: 0;
+visibility: hidden;
+transition: opacity 0.3s, visibility 0.3s;
+}
+
+.modal-content {
+background-color: #ffffff;
+padding: 40px;
+border-radius: 12px;
+text-align: center;
+width: 90%;
+max-width: 450px;
+transform: translateY(-20px);
+transition: transform 0.3s;
+}
+
+.modal-overlay.open {
+opacity: 1;
+visibility: visible;
+}
+
+.modal-overlay.open .modal-content {
+transform: translateY(0);
+}
+
+#modal-score-details {
+margin: 30px 0;
+padding: 20px;
+border: 1px solid #999999;
+border-radius: 8px;
+font-size: 1.1em;
+font-weight: bold;
+}
+
+#modal-score-current {
+color: #000;
+font-size: 1.8em;
+}
+#modal-score-max {
+color: #333;
+}
+#modal-score-percentage {
+color: #333;
+margin-top: 15px;
+font-size: 1.5em;
+}
+
+/* ======================================= */
+/* --- MOBILE LAYOUT: 1-Column Stacking ---*/
+/* ======================================= */
+@media (max-width: 800px) {
+    /* 1. Reset Main Grid to Single Column */
+    .page-layout {
+        /* Force a single column for all content */
+        grid-template-columns: 1fr;
+        /* Stack sections vertically in the desired order */
+        grid-template-areas:
+            "boss"
+            "char-roll"
+            "left"
+            "sidebar";
+        /* Reduce overall spacing */
+        gap: 16px;
+        padding: 10px;
+    }
+
+    /* 2. Adjust Sidebar: Allow content to scroll normally, disable fixed max-height */
+    .sidebar {
+        max-height: none; 
+        overflow-y: visible;
+    }
+
+    /* 3. Adjust Fixed Reset Button for better mobile finger-space */
+    #btn-reset-all {
+        top: 5px;
+        left: 5px;
+        padding: 6px 10px;
+        font-size: 0.8em;
+    }
+    
+    /* 4. Reduce Card Padding */
+    .card {
+        padding: 20px;
+    }
+    
+    /* 5. Adjust Button Group to Stack for small width */
+    .button-group {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    /* 6. Ensure wide content elements are handled */
+    .controls-area {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+}
+</style>
+</head>
+<body>
+
+<button id="btn-reset-all" onclick="resetEntireGame()">🚨 Reset Entire Game</button>
+
+<div class="page-layout">
+
+<div class="boss-randomizer card">
+<h1>Hyoukomi's Boss Roulette</h1>
+
+<div class="controls-area">
+<div class="control-group">
+<label for="boss-rotation-input" style="font-weight: bold;">Rotation Size:</label>
+<input type="number" id="boss-rotation-input" value="12" min="1" max="50" onchange="updateScoreDisplay()">
+</div>
+<div class="control-group">
+<label style="font-weight: bold;">Number of bosses left:</label>
+<span id="rotation-status">0/12 bosses done</span>
+</div>
+</div>
+
+<div id="boss-display">
+<h2 id="boss-name" style="margin-bottom: 10px; color: #000;">Roll a boss to begin the rotation!</h2>
+<div id="parameters-area" style="width: 100%;">
+</div>
+</div>
+
+<div class="scoring-section" id="scoring-area">
+<h2>How many people threw?</h2>
+<div class="score-controls">
+<label><input type="radio" name="penalty_score" value="0" checked> 0</label>
+<label><input type="radio" name="penalty_score" value="1"> 1</label>
+<label><input type="radio" name="penalty_score" value="2"> 2</label>
+<label><input type="radio" name="penalty_score" value="3"> 3</label>
+<label><input type="radio" name="penalty_score" value="4"> 4</label>
+</div>
+</div>
+
+<div class="button-group" id="roll-button-group">
+<button class="btn-primary" id="btn-roll-next" onclick="handleBossRoll()">Roll for the next boss</button>
+<button class="btn-secondary" id="btn-quick-reroll" onclick="rerollBoss()" style="display: none;">Quick Reroll</button>
+</div>
+<button class="btn-reset" id="btn-reset-reroll" onclick="resetRotationAndReroll()">Reset and reroll boss</button>
+<p style="margin-top: 25px; margin-bottom: 0; font-size: 0.9em; color: #333; text-align: center;"> *The next roll will automatically log the status of the previously rolled boss based on how many people threw.</p>
+</div>
+
+<div class="full-width-character-selector card">
+<h1>Randomized Characters</h1>
+<div class="character-randomizer">
+<h2>Choose 4 out of the 8 to play!</h2>
+<div id="character-display">
+<p>Click "Roll Characters" to generate 8 random characters.</p>
+</div>
+<p id="selection-message">You must select at least 4 characters used before confirming.</p>
+<div id="current-pool-status" style="text-align: center; font-weight: bold; margin-bottom: 15px; color: #333;">Total Characters Available: 99</div>
+<div class="button-group" style="margin-top: 0; margin-bottom: 15px;">
+<button class="btn-tertiary" id="btn-roll-chars" onclick="randomizeCharacters(8)">Roll characters</button>
+<button class="btn-secondary" id="btn-reroll-chars" onclick="rerollCharacters()" style="display: none;">Reroll team</button>
+<button class="btn-primary" id="btn-confirm-usage" onclick="confirmUsedCharacters()">Confirm used characters</button>
+</div>
+<div style="text-align: center;">
+<button class="btn-reset" onclick="resetCharacterLists()">Reset character pool</button>
+</div>
+</div>
+</div>
+
+<div class="left-column card">
+<div class="exclusion-generator">
+<h2>⛔ 6 Character bans</h2>
+<div id="exclusion-list">
+<p style="color: #666666; font-weight: normal;">Click the button to generate 6 characters to exclude.</p>
+</div>
+<button class="btn-tertiary-blue" id="btn-generate-exclusions" onclick="generateExclusionList(6)">Generate</button>
+</div>
+
+<div class="category-ban-randomizer" style="margin-top: 30px;">
+<h2>🔮 Category Ban</h2>
+<div id="category-ban-display" style="margin-bottom: 25px;">Roll to determine the next ban category!</div>
+<div style="text-align: center; margin-bottom: 30px;">
+<button class="btn-tertiary-blue" id="btn-roll-ban-category" onclick="runCategoryBan()">Roll ban category</button>
+</div>
+
+<h3>Boss Ban List</h3>
+<div id="boss-ban-list">
+<p style="color: #666666; font-weight: normal;">No bosses currently banned.</p>
+</div>
+<p id="boss-pool-status" style="font-size: 0.9em; margin-top: 10px; color: #333; font-weight: bold;">Total Bosses Available: 50</p>
+</div>
+</div>
+
+<div class="sidebar card">
+<h2>📊 Current Points</h2>
+<div class="score-info">
+<span id="score-current">Current: 0</span>
+<span id="score-max">Max: 48</span>
+</div>
+<hr style="border-color: #e0e0e0; margin: 20px 0;"/>
+
+<h2>Bosses rolled this game:</h2>
+<ol id="rolled-list">
+<li>No bosses rolled yet.</li>
+</ol>
+</div>
+
+</div> <div id="final-score-modal" class="modal-overlay">
+<div class="modal-content">
+<h2 style="margin-bottom: 10px;">🏆 Boss complete</h2>
+<p>You have finished the challenge rotation.</p>
+<div id="modal-score-details">
+<p>Your Final Score: <span id="modal-score-current">0</span></p>
+<p style="margin-top: 5px;">Max Possible Score: <span id="modal-score-max">48</span></p>
+<h3 id="modal-score-percentage"></h3>
+</div>
+<button id="modal-confirm-button" class="btn-primary" onclick="closeFinalScoreModal()">Confirm and start new game</button>
+</div>
+</div>
+
+<script>
+// Global state tracking
+let rolledBosses = [];
+let lastRerolledBoss = null;
+let currentBossToLog = null;
+let currentScore = 0; 
+// Character squad state
+let currentRolledSquad = [];
+
+// NEW STATE TRACKERS for setup control
+let isExclusionGenerated = false;
+let isBanCategoryRolled = false;
+
+// Boss Pool State
+let bossesOriginal = [];
+let bossPool = [];
+const bossBanList = [];
+
+// Character Pool State
+let characterPool = [];
+const exclusionList = [];
+
+// --- DATA ARRAYS (Definitions) ---
+const initialBosses = [
+// Bosses list remains unchanged
+{ name: "Geo Hypostasis", description: "Requires at least one Sword, Claymore or Polearm character" },
+{ name: "Pyro Hypostasis", description: "Requires at least one Hydro or Cryo character" },
+{ name: "Dendro Hypostasis", description: "Requires at least one Dendro or Hydro character" },
+{ name: "SSA: Configuration Device", description: "Requires characters capable of height ascension" },
+{ name: "Wayward Hermetic Spiritspeaker", description: "Requires at least one Pyro or Electro character" },
+{ name: "SSA: Overseer Device", description: "Requires at least one character capable of high-frequency Cryo application" },
+{ name: "Joururi Workshop (Scaramouche Boss)", description: "Requires at least one character capable of interacting with and destroying the Nirvana Engine" },
+{ name: "Unresolved Chess Game", description: "Requires at least one Hydro and Cryo character" },
+{ name: "The Knave - Arlecchino", description: "Requires at least one character capable of healing self and others" },
+{ name: "Anemo Hypostasis", description: null },
+{ name: "Cryo Hypostasis", description: null },
+{ name: "Cryo Regisvine", description: null },
+{ name: "Electro Hypostasis", description: null },
+{ name: "Oceanid", description: null },
+{ name: "Primo Geovishap", description: null }, 
+{ name: "Pyro Regisvine", description: null },
+{ name: "Ruin Serpent", description: null },
+{ name: "Solitary Suanni", description: null },
+{ name: "Bathysmal Vishap Herd", description: null },
+{ name: "Golden Wolflord", description: null },
+{ name: "Hydro Hypostasis", description: null },
+{ name: "Maguu Kenki", description: null },
+{ name: "Perpetual Mechanical Array", description: null },
+{ name: "Thunder Manifestation", description: null },
+{ name: "Shroom Chicken", description: null },
+{ name: "Electro Regisvine", description: null },
+{ name: "Aeonblight Drake", description: null },
+{ name: "Dorito", description: null },
+{ name: "Setekh Wenut", description: null },
+{ name: "Iniquitous Baptist", description: null },
+{ name: "Icewind Suite", description: null },
+{ name: "Emperor of Fire and Iron", description: null },
+{ name: "Experimental Field Generator", description: null },
+{ name: "Millennial Pearl Seahorse", description: null },
+{ name: "Hydro Tulpa", description: null },
+{ name: "Legatus Golem", description: null },
+{ name: "Goldflame Qucusaur Tyrant", description: null },
+{ name: "CaseOH", description: null },
+{ name: "Secret Source Automaton - Configuration Device", description: null },
+{ name: "Secret Source Automaton - Overseer Device", description: null },
+{ name: "Radiant Moonfly", description: null },
+{ name: "Knuckle Duckle", 
+description: null },
+{ name: "Lupus Boreas", description: null },
+{ name: "Childe", description: null },
+{ name: "Azhdaha", description: null },
+{ name: "La Signora", description: null },
+{ name: "Raiden Shogun", description: null },
+{ name: "Guardian of Apep's Oasis", description: null },
+{ name: "All-Devouring Narwhal", description: null },
+{ name: "Lord of Eroded Primal Fire", description: null },
+{ name: "Lava Dragon Statue", description: null },
+{ name: "Frostnight Herra", description: null }
+];
+const characters = [
+"Traveler", "Alloy", "Bennett", "Chevreuse", "Dehya", "Diluc", "Hu Tao", "Gaming", "Klee", "Lyney", "Thoma", "Mavuika", "Xiangling", "Xinyan", "Yanfei", "Yoimiya", "Amber", "Arlecchino", "Albedo", "Arrataki Itto", "Chiori", "Kachina", "Ningguang", "Noelle", "Xilonen", "Yunjin", "Zhongli", "Gorou", "Navia", "Ayato", "Childe", "Aino", "Candace", "Furina", "Kokomi", "Mualani", "Mona", "Nilou", "Neuvilette", "Sigewinne", "Xingqiu", "Yelan", "Dahlia", "Barbara", "Baizhu", "Collei", "Kinich", "Kaveh", "Kirara", "Lauma", "Tighnari", "Emilie", "Nefer", "Yao Yao", "Alhaitham", "Nahida", "Cyno", "Dori", "Fischl", "Beidou", "Iansan", "Ororon", "Keqing", "Ineffa", "Lisa", "Kuki Shinobu", "Kujou Sara", "Raiden Shogun", "Razor", "Flins", "Sethos", "Varesa", "Yae Miko", "Wanderer", "Clorinde", "Charlotte", "Ayaka", "Chongyun", "Citlali", "Diona", "Escoffier", "Kaeya", "Layla", "Eula", "Mika", "Wriothesley", "Freminet", "Shenhe", "Skirk", 
+"Qiqi", "Ganyu", "Chasca", "Faruzan", "Heizou", "Lan yan", "Ifa", "Jean", "Kazuha", "Lynette", "Sayu", "Mizuki", "Sucrose", "Venti", "Xianyun", "Xiao"
+];
+
+// ----------------------------------------------------------------------
+// 🚨 NEW: CHARACTER IMAGE MAPPING
+// You must update this map with the file path to each of your 100x100 images.
+// Images should be placed in a folder named 'images' next to this HTML file.
+// ----------------------------------------------------------------------
+// ----------------------------------------------------------------------
+// 🚨 NEW: CHARACTER IMAGE MAPPING (ALPHABETICAL)
+// ----------------------------------------------------------------------
+const CHAR_IMAGE_MAP = {
+    "Aino": "images/aino.png",
+    "Albedo": "images/albedo.png",
+    "Alhaitham": "images/alhaitham.png",
+    "Alloy": "images/alloy.png",
+    "Amber": "images/amber.png",
+    "Arlecchino": "images/arlecchino.png",
+    "Arrataki Itto": "images/itto.png",
+    "Ayaka": "images/ayaka.png",
+    "Ayato": "images/ayato.png",
+    "Baizhu": "images/baizhu.png",
+    "Barbara": "images/barbara.png",
+    "Beidou": "images/beidou.png",
+    "Bennett": "images/bennett.png",
+    "Candace": "images/candace.png",
+    "Chasca": "images/chasca.png",
+    "Charlotte": "images/charlotte.png",
+    "Chevreuse": "images/chevreuse.png",
+    "Childe": "images/tartaglia.png",
+    "Chiori": "images/chiori.png",
+    "Chongyun": "images/chongyun.png",
+    "Citlali": "images/citlali.png",
+    "Clorinde": "images/clorinde.png",
+    "Collei": "images/collei.png",
+    "Cyno": "images/cyno.png",
+    "Dahlia": "images/dahlia.png",
+    "Dehya": "images/dehya.png",
+    "Diluc": "images/diluc.png",
+    "Diona": "images/diona.png",
+    "Dori": "images/dori.png",
+    "Emilie": "images/emilie.png",
+    "Escoffier": "images/escoffier.png",
+    "Eula": "images/eula.png",
+    "Faruzan": "images/faruzan.png",
+    "Fischl": "images/fischl.png",
+    "Flins": "images/flins.png",
+    "Freminet": "images/freminet.png",
+    "Furina": "images/furina.png",
+    "Gaming": "images/gaming.png",
+    "Ganyu": "images/ganyu.png",
+    "Gorou": "images/gorou.png",
+    "Heizou": "images/heizou.png",
+    "Hu Tao": "images/hutao.png",
+    "Iansan": "images/iansan.png",
+    "Ifa": "images/ifa.png",
+    "Ineffa": "images/ineffa.png",
+    "Jean": "images/jean.png",
+    "Kachina": "images/kachina.png",
+    "Kaeya": "images/kaeya.png",
+    "Kazuha": "images/kazuha.png",
+    "Kaveh": "images/kaveh.png",
+    "Keqing": "images/keqing.png",
+    "Kinich": "images/kinich.png",
+    "Kirara": "images/kirara.png",
+    "Klee": "images/klee.png",
+    "Kokomi": "images/kokomi.png",
+    "Kuki Shinobu": "images/kukishinobu.png",
+    "Kujou Sara": "images/sara.png",
+    "Lauma": "images/lauma.png",
+    "Lan yan": "images/lanyan.png",
+    "Layla": "images/layla.png",
+    "Lisa": "images/lisa.png",
+    "Lyney": "images/lyney.png",
+    "Lynette": "images/lynette.png",
+    "Mavuika": "images/mavuika.png",
+    "Mika": "images/mika.png",
+    "Mizuki": "images/mizuki.png",
+    "Mona": "images/mona.png",
+    "Mualani": "images/mualani.png",
+    "Nahida": "images/nahida.png",
+    "Navia": "images/navia.png",
+    "Nefer": "images/nefer.png",
+    "Neuvilette": "images/neuvillette.png",
+    "Nilou": "images/nilou.png",
+    "Ningguang": "images/ningguang.png",
+    "Noelle": "images/noelle.png",
+    "Ororon": "images/ororon.png",
+    "Qiqi": "images/qiqi.png",
+    "Raiden Shogun": "images/raiden.png",
+    "Razor": "images/razor.png",
+    "Sayu": "images/sayu.png",
+    "Sethos": "images/sethos.png",
+    "Shenhe": "images/shenhe.png",
+    "Sigewinne": "images/sigewinne.png",
+    "Skirk": "images/skirk.png", 
+    "Sucrose": "images/sucrose.png",
+    "Thoma": "images/thoma.png",
+    "Tighnari": "images/tighnari.png",
+    "Traveler": "images/traveler.png", 
+    "Varesa": "images/varesa.png",
+    "Venti": "images/venti.png",
+    "Wanderer": "images/wanderer.png",
+    "Wriothesley": "images/wriothesley.png",
+    "Xiao": "images/xiao.png",
+    "Xianyun": "images/xianyun.png",
+    "Xiangling": "images/xiangling.png",
+    "Xilonen": "images/xilonen.png",
+    "Xingqiu": "images/xingqiu.png",
+    "Xinyan": "images/xinyan.png",
+    "Yae Miko": "images/yaemiko.png",
+    "Yanfei": "images/yanfei.png",
+    "Yao Yao": "images/yaoyao.png",
+    "Yelan": "images/yelan.png",
+    "Yoimiya": "images/yoimiya.png",
+    "Yunjin": "images/yunjin.png",
+    "Zhongli": "images/zhongli.png",
+    
+    // Default image path if a character is missing in the map
+    "DEFAULT_PATH": "images/placeholder.png" 
+};
+
+// --- SCOREBOARD UTILITIES ---
+function updateScoreDisplay() {
+const rotationInput = document.getElementById('boss-rotation-input');
+const rotationSize = parseInt(rotationInput.value);
+const maxPossibleScore = rotationSize * 4;
+document.getElementById('score-max').textContent = `Max: ${maxPossibleScore}`;
+document.getElementById('score-current').textContent = `Current: ${currentScore}`;
+}
+function updateRolledList() {
+const listElement = document.getElementById('rolled-list');
+listElement.innerHTML = '';
+if (rolledBosses.length === 0) {
+listElement.innerHTML = '<li>No bosses rolled yet.</li>';
+return;
+}
+rolledBosses.forEach(bossEntry => {
+const listItem = document.createElement('li');
+listItem.textContent = bossEntry;
+listElement.appendChild(listItem);
+});
+}
+
+
+// --- BOSS POOL MANAGEMENT ---
+
+function updateBossPoolStatus() {
+document.getElementById('boss-pool-status').textContent = `Total Bosses Available: ${bossPool.length}`;
+}
+
+function getBossObjectByName(bossName) {
+// We search the full original list to find the object since the bossPool array might be modified by bans
+return bossesOriginal.find(boss => boss.name === bossName);
+}
+
+function updateBossPool(namesToRemove) {
+bossPool = bossPool.filter(boss => !namesToRemove.includes(boss.name));
+updateBossPoolStatus();
+}
+
+function displayBossBanList() {
+const listElement = document.getElementById('boss-ban-list');
+listElement.innerHTML = '';
+if (bossBanList.length === 0) {
+listElement.innerHTML = '<p style="color: #666666; font-weight: normal;">No bosses currently banned.</p>';
+return;
+}
+bossBanList.forEach(name => {
+const banSpan = document.createElement('span');
+banSpan.className = 'boss-ban-name';
+banSpan.textContent = name;
+listElement.appendChild(banSpan);
+});
+}
+
+function resetBossPool() {
+// This function is ONLY for the full game reset (clears all bans)
+bossPool = [...initialBosses];
+bossBanList.length = 0;
+updateBossPoolStatus();
+displayBossBanList();
+}
+
+// --- CATEGORICAL BAN RANDOMIZER LOGIC ---
+
+function runCategoryBan() {
+    // PREREQUISITE CHECK
+    if (!isExclusionGenerated) return;
+
+    const banType = Math.random() < 0.5 ? 'Boss Bans' : 'Character Bans';
+    const display = document.getElementById('category-ban-display');
+
+    if (banType === 'Boss Bans') {
+        const numToBan = Math.floor(Math.random() * 11) + 10;
+        
+        // Ensure we don't try to ban more than available bosses
+        const bossesToBan = [];
+        const poolForBan = bossPool.filter(boss => !bossBanList.includes(boss.name));
+        if (poolForBan.length === 0) {
+            display.textContent = "Ban: Bosses. (No bosses left to ban!)";
+        } else {
+            const actualNumToBan = Math.min(numToBan, poolForBan.length);
+
+            while (bossesToBan.length < actualNumToBan) {
+                const randomIndex = Math.floor(Math.random() * poolForBan.length);
+                const boss = poolForBan.splice(randomIndex, 1)[0];
+                if (!bossBanList.includes(boss.name)) {
+                    bossesToBan.push(boss.name);
+                    bossBanList.push(boss.name);
+                }
+            }
+
+            updateBossPool(bossesToBan);
+            displayBossBanList();
+            display.textContent = `Ban: Bosses. ${bossesToBan.length} bosses were added to the ban list. Total: ${bossBanList.length}`;
+        }
+    } else { // Character Bans
+        // Fixed ban amount to 8, as requested by the user in the previous step
+        const numToBan = 8; 
+        
+        // Ensure we don't try to ban more than available characters
+        const charsToBan = [];
+        const poolForBan = characterPool.filter(char => !exclusionList.includes(char));
+        if (poolForBan.length === 0) {
+            display.textContent = "Ban: Characters. (No characters left to ban!)";
+        } else {
+            const actualNumToBan = Math.min(numToBan, poolForBan.length);
+
+            while (charsToBan.length < actualNumToBan) {
+                const randomIndex = Math.floor(Math.random() * poolForBan.length);
+                const char = poolForBan.splice(randomIndex, 1)[0];
+                if (!exclusionList.includes(char)) {
+                    charsToBan.push(char);
+                    exclusionList.push(char);
+                }
+            }
+            updateCharacterPool(charsToBan);
+            displayExclusionList();
+            display.textContent = `Ban: Characters. ${charsToBan.length} characters were added to the exclusion list. Total: ${exclusionList.length}`;
+        }
+    }
+
+    // STATE PROGRESSION: Enable main challenge buttons
+    isBanCategoryRolled = true;
+    document.getElementById('btn-roll-ban-category').disabled = true;
+    document.getElementById('btn-roll-next').disabled = false;
+    document.getElementById('btn-roll-chars').disabled = false;
+    
+    // UNLOCK MAIN DISPLAY MESSAGES
+    document.getElementById('boss-name').textContent = "Click 'Roll Next Boss' to begin the rotation!";
+    document.getElementById('character-display').innerHTML = '<p>Click "Roll Characters" to generate a squad of 8. Select a minimum of 4 characters used from the rolled team to remove them from the pool.</p>';
+}
+
+// --- CHARACTER POOL MANAGEMENT ---
+
+function updateCharacterPoolStatus() {
+document.getElementById('current-pool-status').textContent = `Total Characters Available: ${characterPool.length}`;
+}
+
+function updateCharacterPool(namesToRemove) {
+// Remove the used characters from the characterPool
+characterPool = characterPool.filter(char => !namesToRemove.includes(char));
+updateCharacterPoolStatus();
+}
+
+function displayExclusionList() {
+const listElement = document.getElementById('exclusion-list');
+listElement.innerHTML = ''; // Clear existing list
+
+if (exclusionList.length === 0) {
+listElement.innerHTML = '<p style="color: #666666; font-weight: normal;">Click the button to generate 6 characters to exclude.</p>';
+return;
+}
+
+exclusionList.forEach(name => {
+const charSpan = document.createElement('span');
+charSpan.className = 'char-name';
+charSpan.textContent = name;
+// Use the simple charSpan.selected for the exclusion list, as they don't have images
+charSpan.onclick = () => charSpan.classList.toggle('selected');
+listElement.appendChild(charSpan);
+});
+}
+
+function resetCharacterPool() {
+// Rebuild the pool from the original list.
+// FIX: Use a Set to automatically remove any duplicate entries from the 
+// 'characters' array, ensuring a clean pool and fixing the reported bug.
+characterPool = Array.from(new Set(characters)); 
+exclusionList.length = 0;
+updateCharacterPoolStatus();
+displayExclusionList();
+}
+
+
+// --- BOSS ROLL LOGIC ---
+
+function updateStatus(rotationSize) {
+const done = rolledBosses.length;
+const statusText = done >= rotationSize ? `Rotation Complete!` : `${done}/${rotationSize} bosses done`;
+document.getElementById('rotation-status').textContent = statusText;
+}
+
+function rollBoss() {
+    // 1. Check if the rotation is complete
+    const rotationSize = parseInt(document.getElementById('boss-rotation-input').value);
+    if (rolledBosses.length >= rotationSize) {
+        // Show final score modal
+        showFinalScoreModal(rotationSize);
+        return;
+    }
+
+    // 2. Check if the boss pool is empty
+    if (bossPool.length === 0) {
+        document.getElementById('boss-name').textContent = "BOSS POOL EMPTY. Cannot roll new boss.";
+        document.getElementById('parameters-area').innerHTML = "";
+        return null;
+    }
+
+    // 3. Roll a boss
+    const randomIndex = Math.floor(Math.random() * bossPool.length);
+    const rolledBoss = bossPool[randomIndex];
+    const bossObject = getBossObjectByName(rolledBoss.name);
+
+    // 4. Update UI
+    const bossNameElement = document.getElementById('boss-name');
+    bossNameElement.textContent = rolledBoss.name;
+
+    const parametersArea = document.getElementById('parameters-area');
+    if (bossObject.description) {
+        parametersArea.innerHTML = `<p id="boss-parameters-title">Additional Challenge:</p><p id="boss-parameters-description">${bossObject.description}</p>`;
+    } else {
+        parametersArea.innerHTML = "";
+    }
+
+    // 5. Add flash animation
+    bossNameElement.classList.remove('flash');
+    void bossNameElement.offsetWidth; // Trigger reflow
+    bossNameElement.classList.add('flash');
+
+    // 6. Set the current boss for logging and character roll
+    currentBossToLog = rolledBoss.name;
+
+    // 7. Update button text/state
+    document.getElementById('btn-roll-next').textContent = 'Log Run & Roll Next Boss';
+    document.getElementById('btn-quick-reroll').style.display = 'inline-block';
+
+    return rolledBoss.name;
+}
+
+function handleBossRoll() {
+    // PREREQUISITE CHECK
+    if (!isExclusionGenerated || !isBanCategoryRolled) {
+        alert("Please complete the setup in the left column first: Generate Exclusions, then Roll Ban Category.");
+        return;
+    }
+
+    const rotationSize = parseInt(document.getElementById('boss-rotation-input').value);
+
+    if (rolledBosses.length < rotationSize && currentBossToLog) {
+        // Log the previous boss's score (if one was rolled)
+        const selectedScore = parseInt(document.querySelector('input[name="penalty_score"]:checked').value);
+        currentScore += selectedScore;
+        const bossEntry = `[Score ${selectedScore}/4] ${currentBossToLog}`;
+        rolledBosses.push(bossEntry);
+        updateRolledList();
+        updateScoreDisplay();
+        updateStatus(rotationSize);
+    }
+
+    // Roll the next boss
+    rollBoss();
+}
+
+function rerollBoss() {
+    // PREREQUISITE CHECK
+    if (!isExclusionGenerated || !isBanCategoryRolled) return;
+
+    if (!currentBossToLog) return;
+
+    const bossNameElement = document.getElementById('boss-name');
+    bossNameElement.classList.remove('flash');
+    void bossNameElement.offsetWidth; // Trigger reflow
+    bossNameElement.classList.add('flash');
+
+    // 1. Remove the current boss from the pool and save it as lastRerolledBoss
+    const index = bossPool.findIndex(boss => boss.name === currentBossToLog);
+    if (index > -1) {
+        lastRerolledBoss = bossPool.splice(index, 1)[0].name;
+    } else {
+        console.error("Reroll failed: Boss not found in pool.");
+        return;
+    }
+    updateBossPoolStatus();
+
+    // 2. Roll a new boss
+    const newBossName = rollBoss();
+
+    // 3. Put the rerolled boss back into the pool to allow future rolls (but not immediately)
+    if (lastRerolledBoss && !bossPool.some(boss => boss.name === lastRerolledBoss)) {
+        bossPool.push(getBossObjectByName(lastRerolledBoss));
+        updateBossPoolStatus();
+    }
+
+    // 4. Update currentBossToLog to the new boss name
+    currentBossToLog = newBossName;
+}
+
+function resetRotationAndReroll() {
+    // PREREQUISITE CHECK
+    if (!isExclusionGenerated || !isBanCategoryRolled) return;
+
+    // 1. Reset Boss/Score State
+    resetBossRotation();
+    // The current bossPool (which contains category bans) is preserved.
+
+    updateStatus(document.getElementById('boss-rotation-input').value);
+    updateScoreDisplay();
+
+    // 2. Clear UI elements
+    document.getElementById('boss-name').textContent = "Click 'Roll Next Boss' to begin the challenge!";
+    document.getElementById('parameters-area').innerHTML = "";
+    document.getElementById('btn-roll-next').textContent = 'Roll Next Boss / Log Run';
+    document.getElementById('btn-quick-reroll').style.display = 'none';
+
+    // 3. Roll the first boss of the new rotation
+    rollBoss();
+}
+
+function resetBossRotation() {
+    rolledBosses.length = 0;
+    currentScore = 0;
+    currentBossToLog = null;
+    lastRerolledBoss = null;
+    updateRolledList();
+    updateScoreDisplay();
+    updateStatus(document.getElementById('boss-rotation-input').value);
+}
+
+
+// --- CHARACTER ROLL LOGIC (MODIFIED TO USE IMAGE MAP) ---
+
+function randomizeCharacters(count) {
+    // PREREQUISITE CHECK
+    if (!isExclusionGenerated || !isBanCategoryRolled) {
+        alert("Please complete the setup in the left column first: Generate Exclusions, then Roll Ban Category.");
+        return;
+    }
+
+    // 1. Reset squad and clear display
+    currentRolledSquad.length = 0;
+    const display = document.getElementById('character-display');
+    display.innerHTML = '';
+    document.getElementById('selection-message').style.display = 'none';
+
+    if (characterPool.length < count) {
+        display.innerHTML = `<p style="color: red; font-weight: bold;">Error: Only ${characterPool.length} characters remaining in the pool. Reset the character list to continue.</p>`;
+        document.getElementById('btn-roll-chars').style.display = 'inline-block';
+        document.getElementById('btn-reroll-chars').style.display = 'none';
+        document.getElementById('btn-confirm-usage').disabled = true; 
+        return;
+    }
+
+    // 2. Select random characters without replacement
+    let tempPool = [...characterPool];
+    for (let i = 0; i < count; i++) {
+        const randomIndex = Math.floor(Math.random() * tempPool.length);
+        const charName = tempPool.splice(randomIndex, 1)[0];
+        currentRolledSquad.push(charName);
+    }
+
+    // 3. Render the new squad with actual images
+    currentRolledSquad.forEach(name => {
+        const imagePath = CHAR_IMAGE_MAP[name] || CHAR_IMAGE_MAP["DEFAULT_PATH"];
+
+        // Create the card wrapper
+        const charCard = document.createElement('div');
+        charCard.className = 'character-card';
+
+        // Create the name span (char-name)
+        const charSpan = document.createElement('span');
+        charSpan.className = 'char-name';
+        charSpan.textContent = name;
+        
+        // Create the image placeholder container
+        const imgContainer = document.createElement('div');
+        imgContainer.className = 'char-image-placeholder';
+        
+        // Create the actual image element
+        const imgElement = document.createElement('img');
+        imgElement.src = imagePath;
+        imgElement.alt = name;
+        
+        // Append the image to the container
+        imgContainer.appendChild(imgElement);
+
+        // Add click handler to the card wrapper
+        charCard.onclick = () => charCard.classList.toggle('selected');
+        
+        // Assemble the card
+        charCard.appendChild(charSpan);
+        charCard.appendChild(imgContainer); 
+        
+        // Append to display
+        display.appendChild(charCard);
+    });
+
+    // 4. Update button visibility (Hide Roll, Show Reroll, Enable Confirm)
+    document.getElementById('btn-roll-chars').style.display = 'none';
+    document.getElementById('btn-reroll-chars').style.display = 'inline-block';
+    document.getElementById('btn-confirm-usage').disabled = false;
+}
+
+function rerollCharacters() {
+    // PREREQUISITE CHECK
+    if (!isExclusionGenerated || !isBanCategoryRolled) return;
+
+    const display = document.getElementById('character-display');
+    const selectionMessage = document.getElementById('selection-message');
+
+    if (currentRolledSquad.length === 0) {
+        selectionMessage.textContent = 'No squad has been rolled yet to reroll.';
+        selectionMessage.style.display = 'block';
+        return;
+    }
+
+    // 1. Return the current squad to the main pool (characterPool)
+    const returnedChars = [...currentRolledSquad];
+    characterPool.push(...returnedChars);
+    currentRolledSquad.length = 0; // Clear the old squad
+    updateCharacterPoolStatus();
+
+    // 2. Inform the user and roll a new squad
+    display.innerHTML = '<p>Current squad returned to pool. Rolling new squad...</p>';
+    selectionMessage.style.display = 'none';
+    document.getElementById('btn-confirm-usage').disabled = true;
+
+    randomizeCharacters(8); 
+}
+
+function confirmUsedCharacters() {
+    // UPDATED: Look for the name inside the selected card (.character-card.selected)
+    const selectedChars = Array.from(document.querySelectorAll('#character-display .character-card.selected .char-name')).map(el => el.textContent);
+    const selectionMessage = document.getElementById('selection-message');
+
+    if (selectedChars.length < 4) {
+        selectionMessage.textContent = `You must select at least 4 characters used before confirming. (${selectedChars.length}/4 selected)`;
+        selectionMessage.style.display = 'block';
+        return;
+    }
+
+    // Remove selected characters from the main pool
+    updateCharacterPool(selectedChars);
+
+    // Clear the character display and squad
+    currentRolledSquad.length = 0;
+    document.getElementById('character-display').innerHTML = '<p>Character usage confirmed. Click "Roll Characters" to generate the next squad.</p>';
+    selectionMessage.style.display = 'none';
+
+    // Reset button visibility (Show Roll, Hide Reroll, Disable Confirm)
+    document.getElementById('btn-roll-chars').style.display = 'inline-block';
+    document.getElementById('btn-reroll-chars').style.display = 'none';
+    document.getElementById('btn-confirm-usage').disabled = true;
+}
+
+function generateExclusionList(count) {
+    // Only generate if the exclusion list is empty
+    if (exclusionList.length > 0) return;
+
+    if (characterPool.length < count) {
+        document.getElementById('exclusion-list').innerHTML = '<p style="color: red; font-weight: bold;">Not enough characters left to exclude.</p>';
+        return;
+    }
+
+    let tempPool = [...characterPool];
+    const newlyExcluded = [];
+
+    for (let i = 0; i < count; i++) {
+        const randomIndex = Math.floor(Math.random() * tempPool.length);
+        const char = tempPool.splice(randomIndex, 1)[0];
+        newlyExcluded.push(char);
+        exclusionList.push(char);
+    }
+
+    // Remove the newly excluded characters from the pool
+    updateCharacterPool(newlyExcluded);
+
+    // Update UI
+    displayExclusionList();
+
+    // STATE PROGRESSION: Enable the next step (Roll Ban Category)
+    isExclusionGenerated = true;
+    document.getElementById('btn-generate-exclusions').disabled = true;
+    document.getElementById('btn-roll-ban-category').disabled = false;
+    document.getElementById('category-ban-display').textContent = 'Click Roll ban category';
+}
+
+function resetCharacterLists() {
+    resetCharacterPool();
+    // Clear the character display and squad
+    currentRolledSquad.length = 0;
+    document.getElementById('character-display').innerHTML = '<p>The rolled characters will show up here.</p>';
+    document.getElementById('selection-message').style.display = 'none';
+
+    // Reset button visibility
+    document.getElementById('btn-roll-chars').style.display = 'inline-block';
+    document.getElementById('btn-reroll-chars').style.display = 'none';
+    document.getElementById('btn-confirm-usage').disabled = true;
+}
+
+
+// --- MODAL LOGIC ---
+
+function showFinalScoreModal(rotationSize) {
+const maxPossibleScore = rotationSize * 4;
+const percentage = ((currentScore / maxPossibleScore) * 100).toFixed(1);
+
+document.getElementById('modal-score-current').textContent = currentScore;
+document.getElementById('modal-score-max').textContent = maxPossibleScore;
+document.getElementById('modal-score-percentage').textContent = `${percentage}% of Max Score`;
+
+// Open the modal
+document.getElementById('final-score-modal').classList.add('open');
+}
+
+function closeFinalScoreModal() {
+document.getElementById('final-score-modal').classList.remove('open');
+// After closing, automatically start a new rotation by using the non-ban-clearing reset
+resetRotationAndReroll();
+}
+
+
+// --- GLOBAL RESET ---
+
+/**
+ * Disables all main action buttons until prerequisites are met.
+ */
+function setInitialGameLocks() {
+    isExclusionGenerated = false;
+    isBanCategoryRolled = false;
+    
+    // Disable main action buttons
+    document.getElementById('btn-roll-next').disabled = true;
+    document.getElementById('btn-quick-reroll').style.display = 'none'; 
+    document.getElementById('btn-roll-chars').disabled = true;
+    document.getElementById('btn-confirm-usage').disabled = true;
+
+    // Control setup flow
+    document.getElementById('btn-roll-ban-category').disabled = true;
+    document.getElementById('btn-generate-exclusions').disabled = false;
+
+    // Set locked messages
+    document.getElementById('boss-name').textContent = "🔒 Locked: Complete setup at the bottom first.";
+    document.getElementById('parameters-area').innerHTML = "";
+    document.getElementById('character-display').innerHTML = '<p style="color: #e64a19; font-weight: bold;">🔒 Locked: Complete exclusion and ban setup first.</p>';
+    document.getElementById('category-ban-display').textContent = 'Click Generate.';
+}
+
+
+function resetEntireGame() {
+    const isConfirmed = window.confirm("Are you sure you want to reset the ENTIRE game? This will clear all score, bans, and character rolls.");
+        
+    if (!isConfirmed) {
+        return;
+    }
+
+    // 1. Reset Boss/Score State (Full wipe including bans)
+    resetBossRotation();
+    resetBossPool();
+
+    // 2. Reset Character State (Full wipe including exclusions)
+    resetCharacterLists();
+
+    // 3. Reset UI Elements and Game Locks
+    setInitialGameLocks();
+
+    console.log("The game has been reset!");
+}
+
+
+// --- INITIALIZATION ---
+
+function initializeApp() {
+// 1. Setup initial character/boss pools
+bossesOriginal = [...initialBosses];
+resetBossPool();
+resetCharacterPool(); 
+
+// 2. Set initial UI state
+const input = document.getElementById('boss-rotation-input');
+input.value = Math.min(bossesOriginal.length, 12); 
+updateStatus(input.value);
+updateRolledList(); 
+updateScoreDisplay(); 
+displayExclusionList(); 
+
+// 3. Set initial button/game lock state
+setInitialGameLocks();
+
+}
+
+document.addEventListener('DOMContentLoaded', initializeApp);
+
+</script>
+
+</body>
+</html>
+>>>>>>> 554ab3affeff7532a309c5c18fb67e7658dbf1c2
