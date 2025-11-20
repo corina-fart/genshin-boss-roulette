@@ -14,15 +14,13 @@
     <h1 id="page-title">Hyoukomi's Boss Roulette 🌸</h1>
 </div>
 
-<div class="full-width-boons-wrapper">
-
-<button id="btn-reset-all" onclick="resetEntireGame()">🚨 Reset Game</button>
+<button id="btn-reset-all" onclick="resetEntireGame()">🚨 Reset Entire Game</button>
 
 <div class="full-width-boons-wrapper">
     <div class="boons-selector card">
         
         <div class="boon-toggle-header" onclick="toggleBoonsDropdown()">
-            <h2>✨ Selectable Boons<span id="toggle-icon"><p>▼</p></span></h2>
+            <h2>✨ Selectable Boons <span id="toggle-icon">▼</span></h2>
         </div>
 
         <div id="boon-list-master-wrapper" style="max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out;">
@@ -33,22 +31,26 @@
         <div id="active-boons-list" style="margin-top: 20px; padding: 10px; border-top: 1px solid #0a3a7c; font-style: italic; color: #0a3a7c; font-size: 0.9em;">
             <p style="margin: 0;"><strong>Active Boons:</strong> None selected.</p>
         </div>
-    </div>
+        
+        <div class="button-group" style="justify-content: center; margin-top: 15px; padding: 0 10px 10px 10px;">
+            <button class="btn-primary" id="btn-activate-boon" onclick="handleBoonActivation()" disabled>Activate Selected Boon</button>
+        </div>
+        </div>
 </div>
 <div class="page-layout">
 
 <div class="left-column card">
     
-    <div class="exclusion-generator" style="margin-top: 0;"> <h2>⛔ Initial Character Bans</h2>
+    <div class="exclusion-generator" style="margin-top: 0;"> <h2>⛔ Initial Character Exclusion List</h2>
         <div class="control-group" style="justify-content: flex-start; margin-bottom: 20px;">
-            <label for="exclusion-count-input" style="font-weight: bold;">Character bans: </label>
+            <label for="exclusion-count-input" style="font-weight: bold;">Characters to Exclude:</label>
             <input type="number" id="exclusion-count-input" value="6" min="1" max="99" style="width: 50px; padding: 5px; border-radius: 4px; background-color: rgba(255, 192, 203, 0.4); border: 1px solid #0a3a7c; text-align: center; color: #0a3a7c;">
         </div>
         <div id="exclusion-list">
-        <p style="color: #0a3a7c; font-weight: normal;">Enter number for amount of character bans.</p>
+        <p style="color: #0a3a7c; font-weight: normal;">Enter the number of characters to exclude and click the button.</p>
         </div>
         <div class="button-group" style="justify-content: flex-start; margin-top: 10px; margin-bottom: 0;">
-            <button class="btn-tertiary-blue" id="btn-generate-exclusions" onclick="handleGenerateExclusions()">Generate Bans</button>
+            <button class="btn-tertiary-blue" id="btn-generate-exclusions" onclick="handleGenerateExclusions()">Generate Exclusions</button>
             <button class="btn-secondary" id="btn-unban-selected" onclick="handleUnbanSelected()" style="display: none;">Unban Selected</button>
         </div>
     </div>
@@ -84,11 +86,11 @@
 
 
 <div class="boss-randomizer card">
-<h1>🎯 Boss Selector</h1>
+<h1>🎯 Boss Rotation Selector</h1>
 
 <div class="controls-area">
 <div class="control-group">
-<label for="boss-rotation-input" style="font-weight: bold;">Number of bosses:</label>
+<label for="boss-rotation-input" style="font-weight: bold;">Rotation Size:</label>
 <input type="number" id="boss-rotation-input" value="12" min="1" max="50" onchange="updateScoreDisplay()">
 </div>
 <div class="control-group">
@@ -98,22 +100,20 @@
 </div>
 
 <div id="boss-display">
-<h2 id="boss-name">Roll a boss to begin!</h2>
+<h2 id="boss-name">Roll a boss to begin the rotation!</h2>
 <div id="parameters-area" style="width: 100%;">
 </div>
 </div>
 
 <div class="scoring-section" id="scoring-area">
-<h2>How many people threw?</h2>
-<p>Select the penalty score (0-4) before rolling, then click Roll Boss to log the previous result and roll the next.</p>
+<h2>📉 Penalty Score Selector</h2>
+<p>Select the penalty score (0-4) *before* rolling, then click **Roll Next Boss** to log the previous result and roll the next.</p>
 <div class="score-controls">
 <label><input type="radio" name="penalty_score" value="0" checked> 0</label>
 <label><input type="radio" name="penalty_score" value="1"> 1</label>
 <label><input type="radio" name="penalty_score" value="2"> 2</label>
 <label><input type="radio" name="penalty_score" value="3"> 3</label>
 <label><input type="radio" name="penalty_score" value="4"> 4</label>
-<label><input type="radio" name="penalty_score" value="5"> 5</label>
-<label><input type="radio" name="penalty_score" value="6"> 6</label>
 </div>
 </div>
 
@@ -122,25 +122,25 @@
         <label for="boss-roll-count" style="font-size: 0.9em; font-weight: bold; color: #0a3a7c;">Roll Count:</label>
         <input type="number" id="boss-roll-count" value="1" min="1" max="12" style="width: 40px; padding: 5px; border-radius: 4px; background-color: rgba(255, 192, 203, 0.4); border: 1px solid #0a3a7c; text-align: center; color: #0a3a7c;">
     </div>
-    <button class="btn-primary" id="btn-roll-next" onclick="handleBossRoll()">Roll Boss</button>
-    <button class="btn-secondary" id="btn-quick-reroll" onclick="rerollBoss()" style="display: none;">Reroll Boss</button>
+    <button class="btn-primary" id="btn-roll-next" onclick="handleBossRoll()">Roll Next Boss / Log Run</button>
+    <button class="btn-secondary" id="btn-quick-reroll" onclick="rerollBoss()" style="display: none;">Quick Reroll</button>
 </div>
 <button class="btn-reset" id="btn-reset-reroll" onclick="resetRotationAndReroll()">Reset Rotation & Reroll Boss</button>
 <p style="margin-top: 25px; margin-bottom: 0; font-size: 0.9em; color: #0a3a7c; text-align: center;"> *The next roll will automatically log the status of the previously rolled boss using the selected penalty score. </p>
 </div>
 
 <div class="full-width-character-selector card">
-<h1>Boss Roulette</h1>
+<h1>⚔️ Genshin Challenge Randomizer ⚔️</h1>
 <div class="character-randomizer">
-<h2>✨ Random Character Selector</h2>
+<h2>✨ Random Character Selector (8-Person Team)</h2>
 <div id="character-display">
-<p>Click "Roll Characters" to generate 8 characters. Select a minimum of 4 characters used from the rolled team to remove them from the pool.</p>
+<p>Click "Roll Characters" to generate a squad of 8. Select a minimum of 4 characters used from the rolled team to remove them from the pool.</p>
 </div>
 <p id="selection-message">You must select at least 4 characters used before confirming.</p>
 <div id="current-pool-status" style="text-align: center; font-weight: bold; margin-bottom: 15px; color: #0a3a7c;">Total Characters Available: 99</div>
 <div class="button-group" style="margin-top: 0; margin-bottom: 15px;">
 <button class="btn-tertiary" id="btn-roll-chars" onclick="randomizeCharacters(8)">Roll Characters</button>
-<button class="btn-secondary" id="btn-reroll-chars" onclick="rerollCharacters()" style="display: none;">Reroll Characters</button>
+<button class="btn-secondary" id="btn-reroll-chars" onclick="rerollCharacters()" style="display: none;">Quick Reroll Squad</button>
 <button class="btn-primary" id="btn-confirm-usage" onclick="confirmUsedCharacters()">Confirm Used Characters (Min 4)</button>
 </div>
 <div style="text-align: center;">
@@ -148,6 +148,7 @@
 </div>
 </div>
 </div>
+
 
 </div> <div id="final-score-modal" class="modal-overlay">
 <div class="modal-content">
@@ -171,6 +172,8 @@ let currentScore = 0;
 // Character squad state
 let currentRolledSquad = [];
 let activeBoons = []; // STATE TRACKER for boons
+// NEW STATE: Track uses for activatable/consumable boons
+let boonActivationUses = {}; 
 
 // NEW STATE TRACKERS for setup control
 let isExclusionGenerated = false; // Only one state tracker needed now
@@ -242,7 +245,7 @@ description: null },
 { name: "Frostnight Herra", description: null }
 ];
 const characters = [
-"Traveler", "Rosaria", "Alloy", "Bennett", "Chevreuse", "Dehya", "Diluc", "Hu Tao", "Gaming", "Klee", "Lyney", "Thoma", "Mavuika", "Xiangling", "Xinyan", "Yanfei", "Yoimiya", "Amber", "Arlecchino", "Albedo", "Arrataki Itto", "Chiori", "Kachina", "Ningguang", "Noelle", "Xilonen", "Yunjin", "Zhongli", "Gorou", "Navia", "Ayato", "Childe", "Aino", "Candace", "Furina", "Kokomi", "Mualani", "Mona", "Nilou", "Neuvilette", "Sigewinne", "Xingqiu", "Yelan", "Dahlia", "Barbara", "Baizhu", "Collei", "Kinich", "Kaveh", "Kirara", "Lauma", "Tighnari", "Emilie", "Nefer", "Yao Yao", "Alhaitham", "Nahida", "Cyno", "Dori", "Fischl", "Beidou", "Iansan", "Ororon", "Keqing", "Ineffa", "Lisa", "Kuki Shinobu", "Kujou Sara", "Raiden Shogun", "Razor", "Flins", "Sethos", "Varesa", "Yae Miko", "Wanderer", "Clorinde", "Charlotte", "Ayaka", "Chongyun", "Citlali", "Diona", "Escoffier", "Kaeya", "Layla", "Eula", "Mika", "Wriothesley", "Freminet", "Shenhe", "Skirk", 
+"Traveler", "Alloy", "Bennett", "Chevreuse", "Dehya", "Diluc", "Hu Tao", "Gaming", "Klee", "Lyney", "Thoma", "Mavuika", "Xiangling", "Xinyan", "Yanfei", "Yoimiya", "Amber", "Arlecchino", "Albedo", "Arrataki Itto", "Chiori", "Kachina", "Ningguang", "Noelle", "Xilonen", "Yunjin", "Zhongli", "Gorou", "Navia", "Ayato", "Childe", "Aino", "Candace", "Furina", "Kokomi", "Mualani", "Mona", "Nilou", "Neuvilette", "Sigewinne", "Xingqiu", "Yelan", "Dahlia", "Barbara", "Baizhu", "Collei", "Kinich", "Kaveh", "Kirara", "Lauma", "Tighnari", "Emilie", "Nefer", "Yao Yao", "Alhaitham", "Nahida", "Cyno", "Dori", "Fischl", "Beidou", "Iansan", "Ororon", "Keqing", "Ineffa", "Lisa", "Kuki Shinobu", "Kujou Sara", "Raiden Shogun", "Razor", "Flins", "Sethos", "Varesa", "Yae Miko", "Wanderer", "Clorinde", "Charlotte", "Ayaka", "Chongyun", "Citlali", "Diona", "Escoffier", "Kaeya", "Layla", "Eula", "Mika", "Wriothesley", "Freminet", "Shenhe", "Skirk", 
 "Qiqi", "Ganyu", "Chasca", "Faruzan", "Heizou", "Lan yan", "Ifa", "Jean", "Kazuha", "Lynette", "Sayu", "Mizuki", "Sucrose", "Venti", "Xianyun", "Xiao"
 ];
 
@@ -286,11 +289,11 @@ const BOONS_DATA = [
 // ----------------------------------------------------------------------
 const CHAR_IMAGE_MAP = {
     // ... CHAR_IMAGE_MAP data remains unchanged ...
-    "Aino": "images/aino.png", "Albedo": "images/albedo.png", "Alhaitham": "images/alhaitham.png", "Alloy": "images/alloy.png", "Amber": "images/amber.png", "Arlecchino": "images/arlecchino.png", "Arrataki Itto": "images/arrataki_itto.png", "Ayaka": "images/ayaka.png", "Ayato": "images/ayato.png", "Baizhu": "images/baizhu.png", "Barbara": "images/barbara.png", "Beidou": "images/beidou.png", "Bennett": "images/bennett.png", "Candace": "images/candace.png", "Chasca": "images/chasca.png", "Charlotte": "images/charlotte.png", "Chevreuse": "images/chevreuse.png", "Childe": "images/tartaglia.png", "Chiori": "images/chiori.png", "Chongyun": "images/chongyun.png", "Citlali": "images/citlali.png", "Clorinde": "images/clorinde.png", "Collei": "images/collei.png", "Cyno": "images/cyno.png", "Dahlia": "images/dahlia.png", "Dehya": "images/dehya.png", "Diluc": "images/diluc.png", "Diona": "images/diona.png", "Dori": "images/dori.png", "Emilie": "images/emilie.png", "Escoffier": "images/escoffier.png", "Eula": "images/eula.png", "Faruzan": "images/faruzan.png", "Fischl": "images/fischl.png", "Flins": "images/flins.png", "Freminet": "images/freminet.png", "Furina": "images/furina.png", "Gaming": "images/gaming.png", "Ganyu": "images/ganyu.png", "Gorou": "images/gorou.png", "Heizou": "images/heizou.png", "Hu Tao": "images/hutao.png", "Iansan": "images/iansan.png", "Ifa": "images/ifa.png", "Ineffa": "images/ineffa.png", "Jean": "images/jean.png", "Kachina": "images/kachina.png", "Kaeya": "images/kaeya.png", "Kazuha": "images/kazuha.png", "Kaveh": "images/kaveh.png", "Keqing": "images/keqing.png", "Kinich": "images/kinich.png", "Kirara": "images/kirara.png", "Klee": "images/klee.png", "Kokomi": "images/kokomi.png", "Kuki Shinobu": "images/kukishinobu.png", "Kujou Sara": "images/sara.png", "Lauma": "images/lauma.png", "Lan yan": "images/lanyan.png", "Layla": "images/layla.png", "Lisa": "images/lisa.png", "Lyney": "images/lyney.png", "Lynette": "images/lynette.png", "Mavuika": "images/mavuika.png", "Mika": "images/mika.png", "Mizuki": "images/mizuki.png", "Mona": "images/mona.png", "Mualani": "images/mualani.png", "Nahida": "images/nahida.png", "Navia": "images/navia.png", "Nefer": "images/nefer.png", "Neuvilette": "images/neuvillette.png", "Nilou": "images/nilou.png", "Ningguang": "images/ningguang.png", "Noelle": "images/noelle.png", "Ororon": "images/ororon.png", "Qiqi": "images/qiqi.png", "Raiden": "images/raiden.png", "Razor": "images/razor.png","Rosaria": "images/rosaria.png", "Sayu": "images/sayu.png", "Sethos": "images/sethos.png", "Shenhe": "images/shenhe.png", "Sigewinne": "images/sigewinne.png", "Skirk": "images/skirk.png", "Sucrose": "images/sucrose.png", "Thoma": "images/thoma.png", "Tighnari": "images/tighnari.png", "Traveler": "images/traveler.png", "Varesa": "images/varesa.png", "Venti": "images/venti.png", "Wanderer": "images/wanderer.png", "Wriothesley": "images/wriothesley.png", "Xiao": "images/xiao.png", "Xianyun": "images/xianyun.png", "Xiangling": "images/xiangling.png", "Xilonen": "images/xilonen.png", "Xingqiu": "images/xingqiu.png", "Xinyan": "images/xinyan.png", "Yae Miko": "images/yaemiko.png", "Yanfei": "images/yanfei.png", "Yao Yao": "images/yaoyao.png", "Yelan": "images/yelan.png", "Yoimiya": "images/yoimiya.png", "Yunjin": "images/yunjin.png", "Zhongli": "images/zhongli.png", "DEFAULT_PATH": "images/placeholder.png" 
+    "Aino": "images/aino.png", "Albedo": "images/albedo.png", "Alhaitham": "images/alhaitham.png", "Alloy": "images/alloy.png", "Amber": "images/amber.png", "Arlecchino": "images/arlecchino.png", "Arrataki Itto": "images/arrataki_itto.png", "Ayaka": "images/ayaka.png", "Ayato": "images/ayato.png", "Baizhu": "images/baizhu.png", "Barbara": "images/barbara.png", "Beidou": "images/beidou.png", "Bennett": "images/bennett.png", "Candace": "images/candace.png", "Chasca": "images/chasca.png", "Charlotte": "images/charlotte.png", "Chevreuse": "images/chevreuse.png", "Childe": "images/childe.png", "Chiori": "images/chiori.png", "Chongyun": "images/chongyun.png", "Citlali": "images/citlali.png", "Clorinde": "images/clorinde.png", "Collei": "images/collei.png", "Cyno": "images/cyno.png", "Dahlia": "images/dahlia.png", "Dehya": "images/dehya.png", "Diluc": "images/diluc.png", "Diona": "images/diona.png", "Dori": "images/dori.png", "Emilie": "images/emilie.png", "Escoffier": "images/escoffier.png", "Eula": "images/eula.png", "Faruzan": "images/faruzan.png", "Fischl": "images/fischl.png", "Flins": "images/flins.png", "Freminet": "images/freminet.png", "Furina": "images/furina.png", "Gaming": "images/gaming.png", "Ganyu": "images/ganyu.png", "Gorou": "images/gorou.png", "Heizou": "images/heizou.png", "Hu Tao": "images/hu_tao.png", "Iansan": "images/iansan.png", "Ifa": "images/ifa.png", "Ineffa": "images/ineffa.png", "Jean": "images/jean.png", "Kachina": "images/kachina.png", "Kaeya": "images/kaeya.png", "Kazuha": "images/kazuha.png", "Kaveh": "images/kaveh.png", "Keqing": "images/keqing.png", "Kinich": "images/kinich.png", "Kirara": "images/kirara.png", "Klee": "images/klee.png", "Kokomi": "images/kokomi.png", "Kuki Shinobu": "images/kuki_shinobu.png", "Kujou Sara": "images/kujou_sara.png", "Lauma": "images/lauma.png", "Lan yan": "images/lan_yan.png", "Layla": "images/layla.png", "Lisa": "images/lisa.png", "Lyney": "images/lyney.png", "Lynette": "images/lynette.png", "Mavuika": "images/mavuika.png", "Mika": "images/mika.png", "Mizuki": "images/mizuki.png", "Mona": "images/mona.png", "Mualani": "images/mualani.png", "Nahida": "images/nahida.png", "Navia": "images/navia.png", "Nefer": "images/nefer.png", "Neuvilette": "images/neuvilette.png", "Nilou": "images/nilou.png", "Ningguang": "images/ningguang.png", "Noelle": "images/noelle.png", "Ororon": "images/ororon.png", "Qiqi": "images/qiqi.png", "Raiden Shogun": "images/raiden_shogun.png", "Razor": "images/razor.png", "Sayu": "images/sayu.png", "Sethos": "images/sethos.png", "Shenhe": "images/shenhe.png", "Sigewinne": "images/sigewinne.png", "Skirk": "images/skirk.png", "Sucrose": "images/sucrose.png", "Thoma": "images/thoma.png", "Tighnari": "images/tighnari.png", "Traveler": "images/traveler.png", "Varesa": "images/varesa.png", "Venti": "images/venti.png", "Wanderer": "images/wanderer.png", "Wriothesley": "images/wriothesley.png", "Xiao": "images/xiao.png", "Xianyun": "images/xianyun.png", "Xiangling": "images/xiangling.png", "Xilonen": "images/xilonen.png", "Xingqiu": "images/xingqiu.png", "Xinyan": "images/xinyan.png", "Yae Miko": "images/yae_miko.png", "Yanfei": "images/yanfei.png", "Yao Yao": "images/yao_yao.png", "Yelan": "images/yelan.png", "Yoimiya": "images/yoimiya.png", "Yunjin": "images/yunjin.png", "Zhongli": "images/zhongli.png", "DEFAULT_PATH": "images/placeholder.png" 
 };
 
 
-// --- BOON LOGIC (MODIFIED FOR DROPDOWN STRUCTURE) ---
+// --- BOON LOGIC (MODIFIED FOR ACTIVATION) ---
 /**
  * Renders all boons from BOONS_DATA into their respective containers.
  */
@@ -351,13 +354,20 @@ function renderBoons() {
 }
 
 /**
- * Updates the active boons state and the display message.
+ * Updates the active boons state and the display message, and sets up activation uses.
  */
 function handleBoonChange() {
     activeBoons = [];
+    boonActivationUses = {}; // Reset uses
     const checkboxes = document.querySelectorAll('input[name="boon"]:checked');
     checkboxes.forEach(checkbox => {
-        activeBoons.push(checkbox.value);
+        const boonName = checkbox.value;
+        activeBoons.push(boonName);
+        
+        // Check for activatable/consumable boons and set initial uses (1 per session)
+        if (boonName === "Delete Button" || boonName === "Jasmine’s Blessing (Legendary)") {
+            boonActivationUses[boonName] = 1;
+        }
     });
 
     const listElement = document.getElementById('active-boons-list').querySelector('p');
@@ -366,7 +376,153 @@ function handleBoonChange() {
     } else {
         listElement.innerHTML = '<strong>Active Boons:</strong> None selected.';
     }
+    
+    // Update activation button text/state
+    updateBoonActivationButton(); 
 }
+
+/**
+ * NEW FUNCTION: Updates the state and text of the Activate Boon button.
+ */
+function updateBoonActivationButton() {
+    const button = document.getElementById('btn-activate-boon');
+    const activatableBoons = Object.keys(boonActivationUses).filter(key => boonActivationUses[key] > 0);
+    
+    if (activatableBoons.length === 1) {
+        // Show the first word of the boon's name (e.g., "Delete")
+        button.textContent = `Activate Boon: ${activatableBoons[0].split(' ')[0]}`;
+        button.disabled = false;
+    } else if (activatableBoons.length > 1) {
+        button.textContent = `Activate 1 of ${activatableBoons.length} Boons`;
+        button.disabled = false;
+    } else {
+        button.textContent = 'Activate Selected Boon';
+        button.disabled = true; // No activatable boon selected or available
+    }
+}
+
+
+/**
+ * NEW FUNCTION: Handles the activation of a one-time-use boon.
+ */
+function handleBoonActivation() {
+    // 1. Check game state prerequisites
+    if (!isExclusionGenerated) {
+        alert("Please complete the setup in the left column first: Generate Exclusions.");
+        return;
+    }
+    if (!currentBossToLog) {
+        alert("You must roll a boss first before activating a boon.");
+        return;
+    }
+    const rotationSize = parseInt(document.getElementById('boss-rotation-input').value);
+    if (rolledBosses.length >= rotationSize) {
+        alert("Rotation is already complete.");
+        return;
+    }
+
+    // 2. Identify available activatable boons
+    const activatableBoons = Object.keys(boonActivationUses).filter(key => boonActivationUses[key] > 0);
+
+    if (activatableBoons.length === 0) {
+        alert("No activatable boons are currently available. Please select one or ensure its use hasn't been exhausted.");
+        return;
+    }
+
+    let boonToActivate;
+
+    // 3. Handle selection if multiple boons are available (simple prompt for now)
+    if (activatableBoons.length > 1) {
+        const boonNames = activatableBoons.map((name, index) => `${index + 1}: ${name}`).join('\n');
+        const choice = prompt(`Select a boon to activate by entering the number:\n${boonNames}`);
+        const choiceIndex = parseInt(choice) - 1;
+        
+        if (isNaN(choiceIndex) || choiceIndex < 0 || choiceIndex >= activatableBoons.length) {
+            alert("Invalid selection. Activation cancelled.");
+            return;
+        }
+        boonToActivate = activatableBoons[choiceIndex];
+    } else {
+        boonToActivate = activatableBoons[0];
+    }
+    
+    // 4. Apply Boon Effect
+    let success = false;
+    let effectMessage = "";
+
+    if (boonToActivate === "Delete Button") {
+        // 'Use this at any point in the session to "insta-kill" an upcoming boss.'
+        
+        // Log the current boss as cleared with 0 score
+        currentScore += 0;
+        const bossEntry = `[Score 0/4] ${currentBossToLog} (Cleared with Delete Button)`;
+        rolledBosses.push(bossEntry);
+
+        effectMessage = `**${boonToActivate}** used! ${currentBossToLog} logged as a clear (0 penalty).`;
+        success = true;
+
+    } else if (boonToActivate === "Jasmine’s Blessing (Legendary)") {
+        // 'Use this at any point in the session to trade places with Jasmine to clear the boss.'
+        
+        // Log the current boss as cleared with 0 score (Implicit clear)
+        currentScore += 0;
+        const bossEntry = `[Score 0/4] ${currentBossToLog} (Cleared with Jasmine's Blessing)`;
+        rolledBosses.push(bossEntry);
+
+        effectMessage = `**${boonToActivate}** used! ${currentBossToLog} cleared by Jasmine (0 penalty).`;
+        success = true;
+    }
+    
+    // 5. Finalize Activation
+    if (success) {
+        boonActivationUses[boonToActivate] = 0; // Consume the use
+        currentBossToLog = null; // Mark current boss as logged/cleared
+        
+        // Immediately roll the next boss
+        handleNextBossRollAfterActivation();
+
+        // Update UI
+        updateRolledList();
+        updateScoreDisplay();
+        updateStatus(rotationSize);
+        updateBoonActivationButton(); // Update button state
+        
+        alert(effectMessage);
+    }
+}
+
+/**
+ * NEW FUNCTION: Logic for rolling the next boss after a boon activation.
+ */
+function handleNextBossRollAfterActivation() {
+    const rotationSize = parseInt(document.getElementById('boss-rotation-input').value);
+    
+    // 1. Check if rotation is complete after logging the boon-cleared boss
+    if (rolledBosses.length >= rotationSize) {
+        updateCurrentBossDisplay(null); // Clears display and shows "Rotation Complete!"
+        showFinalScoreModal(rotationSize);
+        document.getElementById('btn-quick-reroll').style.display = 'none';
+        document.getElementById('btn-roll-next').textContent = 'Rotation Complete!';
+        document.getElementById('btn-roll-next').disabled = true;
+        return;
+    }
+
+    // 2. Roll the next boss
+    const nextBoss = rollBossSingle(); 
+
+    if (nextBoss) {
+        currentBossToLog = nextBoss.name;
+        updateCurrentBossDisplay(nextBoss);
+        // Ensure button text is correct
+        document.getElementById('btn-roll-next').textContent = 'Log Run & Roll Next Boss';
+    } else {
+         // If pool was empty
+         updateCurrentBossDisplay(null); 
+         document.getElementById('btn-roll-next').textContent = 'Rotation Complete!';
+         document.getElementById('btn-roll-next').disabled = true;
+    }
+}
+
 
 /**
  * Toggles the visibility of the boon list.
@@ -461,7 +617,7 @@ updateBossPoolStatus();
 displayBossBanList();
 }
 
-// --- CATEGORICAL BAN RANDOMIZER LOGIC (MODIFIED) ---
+// --- CATEGORICAL BAN RANDOMIZER LOGIC (UPDATED) ---
 
 function runCategoryBan() {
     // PREREQUISITE CHECK - Only need exclusion to be generated
@@ -542,7 +698,7 @@ function runCategoryBan() {
             
             updateCharacterPool(charsToBan);
             displayExclusionList();
-            display.textContent = `Ban: Characters. ${charsToBan.length} characters were added to the ban list. Total: ${exclusionList.length}`;
+            display.textContent = `Ban: Characters. ${charsToBan.length} characters were added to the exclusion list. Total: ${exclusionList.length}`;
         }
     }
 
@@ -762,7 +918,7 @@ function handleBossRoll() {
         document.getElementById('btn-quick-reroll').style.display = 'none';
         document.getElementById('btn-roll-next').disabled = true;
     } else {
-        document.getElementById('btn-roll-next').textContent = 'Roll Next Boss';
+        document.getElementById('btn-roll-next').textContent = 'Log Run & Roll Next Boss';
     }
 }
 
@@ -819,7 +975,7 @@ function resetRotationAndReroll() {
         currentBossToLog = firstBoss.name;
         updateCurrentBossDisplay(firstBoss);
         // Change button text to indicate the next action is a log
-        document.getElementById('btn-roll-next').textContent = 'Roll Next Boss';
+        document.getElementById('btn-roll-next').textContent = 'Log Run & Roll Next Boss';
     } else {
         document.getElementById('boss-name').textContent = "BOSS POOL EMPTY. Cannot roll new boss.";
         document.getElementById('parameters-area').innerHTML = "";
@@ -1066,7 +1222,7 @@ function generateExclusionList(count) {
     document.getElementById('btn-roll-ban-category').disabled = false; 
 
     // Update main challenge messages
-    document.getElementById('boss-name').textContent = "Ready! Click Roll Next Boss to begin the rotation!";
+    document.getElementById('boss-name').textContent = "Ready! Click 'Roll Next Boss / Log Run' to begin the rotation!";
     document.getElementById('parameters-area').innerHTML = "";
     document.getElementById('character-display').innerHTML = '<p>Click "Roll Characters" to generate a squad of 8. Select a minimum of 4 characters used from the rolled team to remove them from the pool.</p>';
     
@@ -1075,7 +1231,7 @@ function generateExclusionList(count) {
         runCategoryBan(); // Automatically runs the ban and disables the button
     } else {
         // Update category ban display message
-        document.getElementById('category-ban-display').textContent = 'Optional';
+        document.getElementById('category-ban-display').textContent = 'Optional: Click "Roll Ban Category" for an extra challenge.';
     }
     
     // Maximize roll count input based on rotation size
@@ -1156,6 +1312,9 @@ function setInitialGameLocks() {
     
     // Reset inputs
     document.querySelector('input[name="penalty_score"][value="0"]').checked = true;
+    
+    // Update boon button state
+    updateBoonActivationButton();
 }
 
 
@@ -1175,6 +1334,7 @@ function resetEntireGame() {
 
     // 3. Reset Boons
     activeBoons = [];
+    boonActivationUses = {};
     document.querySelectorAll('input[name="boon"]').forEach(checkbox => checkbox.checked = false);
     handleBoonChange(); // Update the display
 
