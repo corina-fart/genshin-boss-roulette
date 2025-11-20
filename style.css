@@ -732,7 +732,6 @@ border-radius: 12px;
 text-align: center;
 width: 90%;
 max-width: 450px;
-border: 1px solid #0a3a7c; /* DIV LINE CHANGE: Dark Blue Border */
 transform: translateY(-20px);
 transition: transform 0.3s;
 }
