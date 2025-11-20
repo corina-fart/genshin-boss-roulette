@@ -1,0 +1,870 @@
+/* General Body Styling - Grayscale Background */
+body {
+/* UPDATED: Paragraphs and general text now use Quicksand */
+font-family: 'Quicksand', sans-serif;
+display: flex;
+flex-direction: column; /* Changed to column to stack title and layout correctly */
+justify-content: flex-start;
+align-items: center; /* Center content horizontally */
+min-height: 100vh;
+margin: 0;
+padding-top: 100px; /* INCREASED padding to make space for the new title and fixed button */
+
+/* === NEW: FIXED BACKGROUND IMAGE FOR USER REPLACEMENT === */
+/* 1. Base color fallback (uses the old background color) */
+background-color: #e6e9f0;
+
+/* 2. Placeholder image (REPLACE 'your-background-image.jpg' with your desired image URL or local path) */
+background-image: url('images/rain-petal-background.gif'); 
+
+/* 3. Ensure image covers the whole screen */
+background-size: cover; 
+
+/* 4. Center the image */
+background-position: center; 
+
+/* 5. Keep image fixed when scrolling */
+background-attachment: fixed;
+/* ======================================================= */
+
+color: #0a3a7c; /* ALL TEXT SET TO DARK BLUE (REQUESTED CHANGE) */
+}
+
+/* --- NEW STYLE: MAIN PAGE TITLE --- */
+#page-title {
+    font-family: 'Cherry Bomb One', cursive;
+    font-size: 2.5em; /* Large size */
+    color: #0a3a7c; /* Dark Blue */
+    text-align: center;
+    margin-bottom: 24px; /* Space between title and main content */
+    padding-top: 10px; /* Space below fixed reset button */
+    /* Since body is now column and centered, this naturally centers */
+    position: relative; 
+    width: 95%; 
+    max-width: 1200px;
+    z-index: 50; 
+}
+
+/* General Body Styling - Grayscale Background */
+body {
+/* UPDATED: Paragraphs and general text now use Quicksand */
+font-family: 'Quicksand', sans-serif;
+display: flex;
+flex-direction: column; /* Changed to column to stack title and layout correctly */
+justify-content: flex-start;
+align-items: center; /* Center content horizontally */
+min-height: 100vh;
+margin: 0;
+padding-top: 100px; /* INCREASED padding to make space for the new title and fixed button */
+
+/* === NEW: FIXED BACKGROUND IMAGE FOR USER REPLACEMENT === */
+/* 1. Base color fallback (uses the old background color) */
+background-color: #e6e9f0;
+
+/* 2. Placeholder image (REPLACE 'your-background-image.jpg' with your desired image URL or local path) */
+background-image: url('images/rain-petal-background.gif'); 
+
+/* 3. Ensure image covers the whole screen */
+background-size: cover; 
+
+/* 4. Center the image */
+background-position: center; 
+
+/* 5. Keep image fixed when scrolling */
+background-attachment: fixed;
+/* ======================================================= */
+
+color: #0a3a7c; /* ALL TEXT SET TO DARK BLUE (REQUESTED CHANGE) */
+}
+
+/* --- NEW STYLE: MAIN PAGE TITLE WRAPPER --- */
+#main-header-title-wrapper {
+    display: flex;
+    align-items: center; /* Vertically align the icon and text */
+    justify-content: center; /* Center the whole title block horizontally */
+    margin-bottom: 24px; /* Space between title and main content */
+    width: 95%; 
+    max-width: 1200px;
+    margin-top: 0; 
+    position: relative; 
+    z-index: 50; 
+}
+
+/* --- NEW STYLE: MAIN PAGE TITLE TEXT (Modified from existing #page-title) --- */
+/* The user requested "Hyoukomi's Boss Roulette 🌸" as the title. */
+#page-title {
+    font-family: 'Cherry Bomb One', cursive;
+    font-size: 2.5em; /* Large size */
+    color: #0a3a7c; /* Dark Blue */
+    text-align: center;
+    margin: 0; 
+    padding: 0; 
+}
+
+/* --- FIXED RESET BUTTON (Darkest Blue for Severity) --- */
+#btn-reset-all {
+position: fixed;
+top: 10px;
+left: 10px;
+z-index: 100;
+background-color: #0a3a7c; /* Very Dark Blue */
+color: white;
+padding: 8px 15px;
+min-height: 42px; /* Unified button height */
+font-size: 0.9em;
+border-radius: 6px;
+cursor: pointer;
+border: none;
+transition: background-color 0.3s;
+}
+#btn-reset-all:hover {
+background-color: #1a73e8; /* Lighter on hover */
+}
+
+/* --- LAYOUT: MAIN GRID CONTAINER (Increased Gap) --- */
+.page-layout {
+display: grid;
+grid-template-columns: 2fr 1fr;
+/* NEW LAYOUT: Setup/Bans and Score are now the top row (2-column),
+   followed by Boss Roll, then Character Roll (both full width). */
+grid-template-areas:
+"setup sidebar"
+"boss boss"
+"char-roll char-roll";
+gap: 24px;
+max-width: 1200px;
+width: 95%;
+padding: 24px;
+}
+
+/* --- CARD STYLING (Frosted Glass Effect - Pink/40% Opacity) --- */
+.card {
+/* FROSTED GLASS EFFECT: Pink with 40% opacity (REQUESTED CHANGE) */
+background-color: rgba(255, 192, 203, 0.4); 
+backdrop-filter: blur(10px); /* Added Blur (REQUESTED CHANGE) */
+-webkit-backdrop-filter: blur(10px); /* Added Blur (REQUESTED CHANGE) */
+padding: 32px;
+border-radius: 12px;
+text-align: left;
+border: 1px solid #0a3a7c; /* DIV LINE CHANGE: Dark Blue Border */
+}
+
+/* --- GRID AREA DEFINITIONS & Background Overrides --- */
+.boss-randomizer {
+grid-area: boss;
+margin-bottom: 20px;
+}
+
+.full-width-character-selector {
+grid-area: char-roll;
+border-top: none; /* Removed Border (REQUESTED CHANGE) */
+padding-top: 32px;
+margin-top: -10px;
+}
+
+.left-column {
+/* Changed from 'left' to 'setup' to match new grid area */
+grid-area: setup; 
+/* Pink tinted background (40% opacity, blur is inherited from .card) */
+background-color: rgba(255, 192, 203, 0.4); 
+}
+
+.sidebar {
+grid-area: sidebar;
+overflow-y: auto;
+max-height: 85vh;
+/* Pink tinted background (40% opacity, blur is inherited from .card) */
+background-color: rgba(255, 192, 203, 0.4); 
+}
+
+/* Applying card class to all major sections */
+.boss-randomizer,
+.full-width-character-selector,
+.left-column,
+.sidebar {
+box-shadow: none; /* Removed Drop Shadow (REQUESTED CHANGE) */
+}
+
+/* --- HEADER AND DIVIDER STYLING --- */
+
+/* H1 and H3 use Cherry Bomb One */
+.boss-randomizer > h1,
+.full-width-character-selector > h1,
+.category-ban-randomizer h3,
+.boons-selector h3 { /* NEW: Boons Selector H3 */
+    font-family: 'Cherry Bomb One', cursive;
+    border-bottom: none; /* Removed Border (REQUESTED CHANGE) */
+    padding-bottom: 16px;
+    margin-bottom: 30px;
+    margin-top: 0;
+    text-align: left;
+    color: #0a3a7c; /* Ensure headers are Dark Blue (REQUESTED CHANGE) */
+}
+.boons-selector h3 {
+    margin-bottom: 15px; /* Adjust spacing for boon sub-headers */
+    font-size: 1.1em;
+    border-bottom: 2px solid rgba(10, 58, 124, 0.1);
+    padding-bottom: 5px;
+    margin-top: 15px;
+}
+
+
+/* H2s now use Cherry Bomb One (REVERTED) */
+.boss-randomizer > h2,
+.full-width-character-selector > h2,
+.left-column h2, /* MODIFIED: Use descendant selector (space) to target nested H2s like the Exclusion List header */
+.category-ban-randomizer h2,
+.boons-selector h2, /* NEW: Boons Selector H2 */
+.sidebar h2,
+.modal-content h2 { /* Added modal H2 */
+    font-family: 'Cherry Bomb One', cursive;
+    border-bottom: none; /* Removed Border (REQUESTED CHANGE) */
+    padding-bottom: 16px;
+    margin-bottom: 30px;
+    margin-top: 0;
+    text-align: left;
+    color: #0a3a7c; /* Set to Dark Blue (REQUESTED CHANGE) */
+}
+
+/* Ensure main H1s have their correct color and margin */
+.boss-randomizer h1 {
+color: #0a3a7c; /* Set to Dark Blue (REQUESTED CHANGE) */
+}
+
+/* Override the general H2 style for the internal Scoring H2 (removes border) */
+.scoring-section h2 {
+border-bottom: none;
+padding-bottom: 0;
+margin-bottom: 10px;
+margin-top: 0;
+color: #0a3a7c; /* Set to Dark Blue (REQUESTED CHANGE) */
+/* No need to re-set font as it inherits Cherry Bomb One from the H2 block above */
+}
+
+/* Sidebar H2 now uses dark blue */
+.sidebar h2 {
+color: #0a3a7c; /* Set to Dark Blue (REQUESTED CHANGE) */
+font-size: 1.3em;
+}
+
+/* --- NEW BOON STYLING (MODIFIED FOR DROPDOWN) --- */
+
+/* Container for Full-Width Boons Card */
+.full-width-boons-wrapper {
+    max-width: 1200px;
+    width: 95%;
+    margin-bottom: 24px;
+}
+.boons-selector {
+    padding: 0; /* Remove padding from card to allow header to be full width */
+}
+
+/* NEW: Style for the clickable header */
+.boon-toggle-header {
+    cursor: pointer;
+    /* This makes the header span the full width of the card's visual area */
+    padding: 32px; 
+    padding-bottom: 15px;
+    border-radius: 12px 12px 0 0;
+    /* Frosted glass effect for the header area */
+    background-color: rgba(255, 192, 203, 0.4); 
+    border-bottom: 1px solid #0a3a7c;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.boon-toggle-header h2 {
+    margin: 0;
+    padding-bottom: 0; /* Remove padding from nested H2 */
+    border-bottom: none;
+    margin-bottom: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+#toggle-icon {
+    font-size: 1.5em;
+    font-weight: bold;
+    line-height: 1;
+}
+
+/* Container for Boon List (Collapsible Content) */
+#boon-list-master-wrapper {
+    /* max-height: 0, overflow: hidden, and transition are set inline on the element for JS control */
+    padding: 0 32px; /* Restore horizontal padding */
+    margin-top: 5px; /* Adjust spacing below the toggle header */
+}
+
+/* Container for Standard/Legendary lists (REVERTED TO VERTICAL STACK) */
+.boon-list-container {
+    display: block; /* Revert to block for vertical stacking */
+    overflow-x: hidden; /* Ensure no horizontal scroll */
+    padding: 0; 
+    border: none;
+    background-color: transparent;
+}
+
+.boon-group {
+    /* Ensure vertical stacking and proper spacing */
+    display: block; 
+    margin: 15px 0 30px 0; /* Space between groups */
+    padding: 0; 
+}
+.boon-group:first-child {
+    margin-top: 0;
+}
+
+/* Individual Boon Item - now stacks vertically */
+.boon-item {
+    min-width: auto; 
+    max-width: none;
+    margin-bottom: 10px;
+    padding: 8px 15px;
+    border-bottom: 1px dashed rgba(10, 58, 124, 0.2);
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    flex-shrink: 0; 
+}
+
+.boon-item:last-child {
+    border-bottom: none;
+}
+.boon-item label {
+    display: block;
+    cursor: pointer;
+    font-weight: bold;
+    color: #0a3a7c;
+}
+.boon-description {
+    font-size: 0.85em;
+    color: #1a73e8; /* Use a medium blue for description text */
+    margin-left: 20px;
+    margin-top: 4px;
+}
+.legendary-boon label {
+    color: #e64a19; /* Red/Orange for Legendary Boons */
+}
+/* Active boons list style adjustment */
+#active-boons-list {
+    margin-top: 0 !important; /* Adjust margin to be flush with card bottom */
+    padding: 15px 32px 32px 32px !important; /* Restore card padding on the bottom */
+    border-top: 1px solid #0a3a7c !important; /* Keep the top border */
+    background-color: transparent;
+    border-radius: 0 0 12px 12px;
+}
+/* ------------------------- */
+
+
+/* --- LIST STYLING --- */
+#rolled-list {
+list-style-type: decimal;
+padding-left: 20px;
+margin: 0;
+}
+
+#rolled-list li {
+padding: 8px 0;
+font-size: 0.95em;
+border-bottom: none; /* Removed Border (REQUESTED CHANGE) */
+}
+
+/* Horizontal Rule (Divider) */
+hr {
+display: none; /* Hide the HR (REQUESTED CHANGE) */
+}
+
+/* --- Scoring Section (Nested Frosted Glass) --- */
+.scoring-section {
+margin-top: 30px;
+padding: 20px;
+border-radius: 8px;
+/* NESTED FROSTED GLASS EFFECT: Pink with 40% opacity (REQUESTED CHANGE) */
+background-color: rgba(255, 192, 203, 0.4); 
+backdrop-filter: blur(10px); /* Added Blur (REQUESTED CHANGE) */
+-webkit-backdrop-filter: blur(10px); /* Added Blur (REQUESTED CHANGE) */
+text-align: center;
+border: 1px solid #0a3a7c; /* DIV LINE CHANGE: Dark Blue Border */
+}
+
+.score-info {
+display: flex;
+justify-content: space-around;
+font-weight: bold;
+font-size: 1.1em;
+margin-bottom: 15px;
+color: #0a3a7c; /* Changed text color to Dark Blue */
+}
+
+.score-controls {
+display: flex;
+justify-content: center;
+gap: 25px;
+padding-top: 15px;
+border-top: 1px solid #0a3a7c; /* DIV LINE CHANGE: Dark Blue Border */
+}
+
+/* --- Character Sections --- */
+
+.char-name {
+/* CHANGED: From #e0e0e0 (gray) to white with 40% opacity */
+background-color: rgba(255, 255, 255, 0.4); 
+color: #0a3a7c; /* Changed text color to Dark Blue (REQUESTED CHANGE) */
+padding: 5px 10px; /* Adjusted padding */
+border-radius: 4px;
+font-size: 0.85em; /* Adjusted font size */
+font-weight: bold;
+cursor: pointer;
+transition: background-color 0.2s, color 0.2s, border 0.2s;
+border: none;
+width: auto; /* Allow auto width for exclusion list */
+text-align: center;
+}
+
+/* Style for character names in the Exclusion List (text-only interaction) */
+#exclusion-list .char-name.selected {
+    background-color: #ff69b4; /* Pinker background on selection */
+    border: none; /* Removed Border (REQUESTED CHANGE) */
+}
+
+/* NEW: Card Wrapper for Rolled Characters (Name + Image) */
+.character-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px; /* space between name and image */
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 8px;
+    border: none; /* Removed Border (REQUESTED CHANGE) */
+    transition: all 0.2s ease-in-out;
+    background-color: rgba(255, 192, 203, 0.4); /* Pink Background (40% Opacity) */
+}
+
+/* Fix char-name width inside the card for uniform look */
+.character-card .char-name {
+    width: 90px;
+}
+
+/* NEW: Image Placeholder Style (100x100px as requested) */
+.char-image-placeholder {
+    width: 100px;
+    height: 100px;
+    /* CHANGED: From #e0e0e0 (gray) to white with 40% opacity */
+    background-color: rgba(255, 255, 255, 0.4); 
+    border: none; /* Removed Border (REQUESTED CHANGE) */
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.7em;
+    color: #666; /* Keeping placeholder text light grey for low importance */
+    overflow: hidden; 
+    box-sizing: border-box; 
+}
+/* Ensure the image inside the placeholder covers the area */
+.char-image-placeholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures the image fills the container without distortion (cropping if necessary) */
+    display: block;
+}
+
+
+/* Style for the card when selected (clicked) */
+.character-card.selected {
+    border: 2px solid #0a3a7c; /* DIV LINE CHANGE: Was white, now Dark Blue */
+    box-shadow: none; /* Removed Shadow (REQUESTED CHANGE) */
+    background-color: #ff69b4; /* Pinker on selection */
+}
+
+
+/* Exclusion/Ban List Container (Nested Frosted Glass) */
+#exclusion-list, #boss-ban-list {
+/* Common container styles for both lists */
+min-height: 60px;
+margin-bottom: 20px;
+padding: 15px;
+border-radius: 8px;
+/* NESTED FROSTED GLASS EFFECT: Pink with 40% opacity (REQUESTED CHANGE) */
+background-color: rgba(255, 192, 203, 0.4); 
+backdrop-filter: blur(10px); /* Added Blur (REQUESTED CHANGE) */
+-webkit-backdrop-filter: blur(10px); /* Added Blur (REQUESTED CHANGE) */
+border: 1px solid #0a3a7c; /* DIV LINE CHANGE: Dark Blue Border */
+}
+
+/* Re-apply flex to #exclusion-list only (for inline spans) */
+#exclusion-list {
+display: flex;
+flex-wrap: wrap;
+justify-content: flex-start;
+gap: 8px;
+}
+
+/* Style for the Boss Ban List (ul/li structure) */
+#boss-ban-list ul {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin: 0; /* Remove default ul margin */
+    width: 100%; /* Ensure the list takes full width of the container */
+}
+
+#boss-ban-list li {
+    margin-bottom: 5px;
+    line-height: 1.3;
+}
+
+#exclusion-list p, #boss-ban-list p {
+margin: 0;
+color: #0a3a7c !important; /* Ensure placeholder text is Dark Blue (REQUESTED CHANGE) */
+}
+
+/* Character Display Area - uses flex for the 8 characters */
+#character-display {
+display: flex;
+flex-wrap: wrap;
+justify-content: center;
+gap: 12px;
+margin-bottom: 25px;
+min-height: 80px;
+padding: 15px;
+border-radius: 8px;
+}
+#character-display p {
+padding: 10px 0;
+margin: 0;
+color: #0a3a7c; /* Changed text color to Dark Blue (REQUESTED CHANGE) */
+}
+/* ... rest of the existing CSS ... */
+
+/* Boss Display elements - kept centered */
+#boss-display {
+text-align: center;
+margin-bottom: 30px;
+}
+
+/* --- BOSS NAME FONT CHANGE --- */
+#boss-name {
+    /* MODIFIED: Change font to Cherry Bomb One and make it bigger */
+    font-family: 'Cherry Bomb One', cursive;
+    font-size: 2.2em; /* Made bigger */
+    margin-bottom: 10px;
+    color: #0a3a7c;
+}
+/* ----------------------------- */
+
+#parameters-area {
+text-align: center;
+width: 100%;
+padding: 10px 0;
+color: #0a3a7c; /* Changed text color to Dark Blue (REQUESTED CHANGE) */
+}
+
+#boss-parameters-title {
+margin-top: 15px;
+margin-bottom: 5px;
+font-weight: bold;
+}
+#boss-parameters-description {
+margin-top: 5px;
+margin-bottom: 0;
+padding: 0 10px;
+color: #0a3a7c; /* Changed text color to Dark Blue (REQUESTED CHANGE) */
+font-style: italic;
+}
+
+/* Input/Status Controls */
+.controls-area {
+display: flex;
+justify-content: space-around;
+align-items: center;
+margin-bottom: 30px;
+padding-bottom: 15px;
+border-bottom: 1px solid #0a3a7c; /* DIV LINE CHANGE: Dark Blue Border */
+color: #0a3a7c; /* Changed text color to Dark Blue (REQUESTED CHANGE) */
+}
+.control-group {
+display: flex;
+align-items: center;
+gap: 8px;
+}
+#boss-rotation-input, #exclusion-count-input, #boss-roll-count { /* Added #boss-roll-count here */
+width: 50px;
+padding: 5px;
+border-radius: 4px;
+/* Set input background to be transparent pink, border to white */
+background-color: rgba(255, 192, 203, 0.4); 
+border: 1px solid #0a3a7c; /* DIV LINE CHANGE: Was white, now Dark Blue */
+text-align: center;
+color: #0a3a7c; /* Changed text color to Dark Blue (REQUESTED CHANGE) */
+}
+
+/* General Button Styling: All buttons inherit this base style */
+.btn-tertiary, .btn-tertiary-blue, .btn-primary, .btn-secondary, .btn-reset, #btn-reset-all { 
+padding: 10px 25px; /* Unified vertical padding (12px -> 10px) */
+min-height: 42px; /* Unified button height */
+font-size: 1em;
+border-radius: 6px;
+cursor: pointer;
+border: none;
+transition: background-color 0.3s;
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+/* *** MODIFICATION: Force all button text to WHITE *** */
+color: white !important; 
+/* *** MODIFICATION: CHANGE BUTTON FONT *** */
+font-family: 'Cherry Bomb One', cursive; 
+font-weight: 400; /* Ensure the font is applied */
+}
+
+/* --- FIXED RESET BUTTON (Apply new font, keep base color) --- */
+#btn-reset-all {
+background-color: #0a3a7c; /* Very Dark Blue */
+}
+#btn-reset-all:hover {
+background-color: #1a73e8; /* Lighter on hover */
+}
+
+/* Button Styling for Roll Boss, Confirm Usage (Primary - Darkest Blue) */
+.btn-primary {
+/* *** MODIFICATION: CHANGE BACKGROUND COLOR *** */
+background-color: #0a3a7c; /* Darkest Blue */
+}
+
+.btn-primary:hover {
+background-color: #1a73e8; /* Lighter on hover */
+}
+
+/* Button Styling for Reroll Boss, Roll Ban Category (Secondary - Dark Blue) */
+.btn-secondary {
+/* *** MODIFICATION: CHANGE BACKGROUND COLOR *** */
+background-color: #1a73e8; /* Slightly lighter Dark Blue */
+}
+
+.btn-secondary:hover {
+background-color: #4285f4; /* Even lighter on hover */
+}
+
+/* General Tertiary Button Styling (Now Dark Blue, was light blue) */
+.btn-tertiary, .btn-tertiary-blue {
+/* *** MODIFICATION: CHANGE BACKGROUND COLOR *** */
+background-color: #1a73e8; /* Dark Blue */
+}
+.btn-tertiary:hover, .btn-tertiary-blue:hover {
+background-color: #4285f4; /* Lighter on hover */
+}
+
+/* Button for confirming used characters (Reusing Primary style, applying new color) */
+#btn-confirm-usage {
+/* *** MODIFICATION: CHANGE BACKGROUND COLOR *** */
+background-color: #0a3a7c; /* Darkest Blue */
+color: white;
+font-size: 1.1em;
+margin-top: 15px;
+}
+#btn-confirm-usage:hover {
+    background-color: #1a73e8;
+}
+
+/* Boss Roll Button Group */
+.button-group {
+display: flex;
+gap: 20px;
+justify-content: center;
+margin-top: 25px;
+margin-bottom: 25px;
+}
+
+/* Reset Button Styling (Now Darkest Blue, was medium-light blue) */
+.btn-reset {
+/* *** MODIFICATION: CHANGE BACKGROUND COLOR & TEXT COLOR *** */
+background-color: #0a3a7c; /* Darkest Blue */
+}
+.btn-reset:hover {
+background-color: #1a73e8; /* Lighter on hover */
+}
+
+/* New styling for the combined reset/reroll button */
+#btn-reset-reroll {
+padding: 10px 20px;
+font-size: 1em;
+margin-top: 15px;
+margin-bottom: 25px;
+display: block;
+margin-left: auto;
+margin-right: auto;
+}
+
+#selection-message {
+color: #e64a19; /* Use a red tone for errors */
+font-weight: bold;
+margin-top: 15px;
+display: none;
+text-align: center;
+}
+
+/* Flash color on new boss roll */
+.boss-randomizer #boss-display.flash {
+background-color: #ff69b4; /* Changed flash color to a darker pink */
+}
+
+/* --- Modal Styling --- */
+.modal-overlay {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(0, 0, 0, 0.7);
+display: flex;
+justify-content: center;
+align-items: center;
+z-index: 200;
+opacity: 0;
+visibility: hidden;
+transition: opacity 0.3s, visibility 0.3s;
+}
+
+.modal-content {
+background-color: rgba(255, 192, 203, 0.4); /* Pink with 40% opacity (REQUESTED CHANGE) */
+backdrop-filter: blur(10px); /* Added Blur (REQUESTED CHANGE) */
+-webkit-backdrop-filter: blur(10px); /* Added Blur (REQUESTED CHANGE) */
+padding: 40px;
+border-radius: 12px;
+text-align: center;
+width: 90%;
+max-width: 450px;
+border: 1px solid #0a3a7c; /* DIV LINE CHANGE: Dark Blue Border */
+transform: translateY(-20px);
+transition: transform 0.3s;
+}
+
+.modal-overlay.open {
+opacity: 1;
+visibility: visible;
+}
+
+.modal-overlay.open .modal-content {
+transform: translateY(0);
+}
+
+#modal-score-details {
+margin: 30px 0;
+padding: 20px;
+border: 1px solid #0a3a7c; /* DIV LINE CHANGE: Dark Blue Border */
+border-radius: 8px;
+font-size: 1.1em;
+font-weight: bold;
+}
+
+/* Text in the modal details set to Dark Blue */
+#modal-score-current {
+color: #0a3a7c; 
+font-size: 1.8em;
+}
+#modal-score-max {
+color: #0a3a7c; 
+}
+#modal-score-percentage {
+color: #0a3a7c; 
+margin-top: 15px;
+font-size: 1.5em;
+}
+
+/* TEXT COLOR OVERRIDES */
+
+/* These elements previously had specific dark colors in the HTML or general styling. Change to Dark Blue for consistency. */
+#boss-pool-status, 
+#current-pool-status, 
+.boss-randomizer p:last-child {
+    color: #0a3a7c !important;
+}
+
+/* ======================================= */
+/* --- MOBILE LAYOUT: 1-Column Stacking ---*/
+/* ======================================= */
+@media (max-width: 800px) {
+    /* 1. Reset Main Grid to Single Column */
+    .page-layout {
+        /* Force a single column for all content */
+        grid-template-columns: 1fr;
+        /* Stack sections vertically in the desired order (source order: setup -> sidebar -> boss -> char-roll) */
+        grid-template-areas:
+            "setup"
+            "sidebar"
+            "boss"
+            "char-roll";
+        /* Reduce overall spacing */
+        gap: 16px;
+        padding: 10px;
+    }
+    
+    /* 2. Adjust Main Title for smaller screens */
+    #page-title {
+        font-size: 1.8em;
+    }
+
+    /* 3. Adjust Sidebar: Allow content to scroll normally, disable fixed max-height */
+    .sidebar {
+        max-height: none; 
+        overflow-y: visible;
+    }
+
+    /* 4. Adjust Fixed Reset Button for better mobile finger-space */
+    #btn-reset-all {
+        top: 5px;
+        left: 5px;
+        padding: 6px 10px;
+        font-size: 0.8em;
+    }
+    
+    /* 5. Reduce Card Padding */
+    .card {
+        padding: 20px;
+    }
+    .boons-selector {
+        padding: 0;
+    }
+    .boon-toggle-header {
+        padding: 20px;
+        padding-bottom: 10px;
+    }
+    #active-boons-list {
+        padding: 15px 20px 20px 20px !important;
+    }
+    
+    /* 6. Adjust Button Group to Stack for small width */
+    .button-group {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    /* 7. Ensure wide content elements are handled */
+    .controls-area {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+    
+    /* 8. Fix Boon Scroll/Grid on Mobile */
+    .boon-list-container {
+        /* Keep as block (vertical stacking) */
+        overflow-x: hidden;
+    }
+    
+    /* Override min-width on mobile to prevent excessive scrolling space */
+    .boon-group {
+        min-width: auto; 
+    }
+    
+    /* Vertical divider styling for mobile view where both groups are side-by-side but scrollable */
+    .boon-group:first-child {
+        border-right: none;
+        padding-right: 0; 
+    }
+    .boon-group:last-child {
+        padding-left: 0;
+    }
+    
+    .boon-item {
+        min-width: auto; /* Reset min-width again for better flow */
+    }
+}
