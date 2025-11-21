@@ -44,7 +44,7 @@
     <div class="exclusion-generator" style="margin-top: 0;"> <h2>⛔ Initial Character Exclusion List</h2>
         <div class="control-group" style="justify-content: flex-start; margin-bottom: 20px;">
             <label for="exclusion-count-input" style="font-weight: bold;">Characters to Exclude:</label>
-            <input type="number" id="exclusion-count-input" value="6" min="1" max="99" style="width: 50px; padding: 5px; border-radius: 4px; background-color: rgba(255, 192, 203, 0.4); border: 1px solid #0a3a7c; text-align: center; color: #0a3a7c;">
+            <input type="number" id="exclusion-count-input" value="6" min="1" max="99" style="width: 50px; padding: 5px; border-radius: 4px; background-color: rgba(255, 192, 203, 0.4); border: 1px solid #0a3a7c; border: 1px solid #0a3a7c; text-align: center; color: #0a3a7c;">
         </div>
         <div id="exclusion-list">
         <p style="color: #0a3a7c; font-weight: normal;">Enter the number of characters to exclude and click the button.</p>
@@ -249,7 +249,27 @@ const characters = [
 "Qiqi", "Ganyu", "Chasca", "Faruzan", "Heizou", "Lan yan", "Ifa", "Jean", "Kazuha", "Lynette", "Sayu", "Mizuki", "Sucrose", "Venti", "Xianyun", "Xiao"
 ];
 
-// --- DATA: BOONS ---
+// --- DATA: 4-STAR CHARACTERS FOR "FOUR-STAR IMPACT" BOON (IMPLEMENTED) ---
+const FOUR_STAR_CHARS = [
+    "Aino", "Amber", "Barbara", "Beidou", "Bennett", "Candace", "Charlotte", "Chevreuse", 
+    "Chongyun", "Collei", "Dahlia", "Diona", "Dori", "Faruzan", "Fischl", "Freminet", 
+    "Gaming", "Gorou", "Iansan", "Ifa", "Kachina", "Kaeya", "Kazuha", "Kaveh", "Kirara", "Kuki Shinobu", "Kujou Sara", 
+    "Lan yan", "Layla", "Lisa", "Lynette", "Mika", "Ningguang", "Noelle", 
+    "Ororon", "Razor", "Rosaria", "Sayu", "Sethos", "Heizou", "Sucrose", "Thoma", 
+    "Xiangling", "Xingqiu", "Xinyan", "Yanfei", "Yao Yao", 
+    "Yunjin", "Thoma"
+];
+
+// NEW DATA: Manually classified 5-star characters for boon logic (based on the full 'characters' list)
+const fiveStarCharacters = [
+    "Dehya", "Diluc", "Hu Tao", "Klee", "Lyney", "Yoimiya", "Arlecchino", "Albedo", 
+    "Arrataki Itto", "Chiori", "Zhongli", "Navia", "Ayato", "Childe", "Furina", "Kokomi", 
+    "Mualani", "Mona", "Nilou", "Neuvilette", "Sigewinne", "Yelan", "Baizhu", "Tighnari", 
+    "Alhaitham", "Nahida", "Cyno", "Keqing", "Raiden Shogun", "Yae Miko", "Wanderer", 
+    "Clorinde", "Ayaka", "Eula", "Wriothesley", "Shenhe", "Qiqi", "Ganyu", "Jean", 
+    "Kazuha", "Venti", "Xianyun", "Xiao", "Xilonen", "Kinich", "Lauma", "Emilie", "Nefer", "Ineffa", "Flins", "Varesa", "Citlali", "Escoffier", "Skirk", "Chasca", "Mizuki", "Mavuika", "Aloy", "Traveler"
+];
+// ----------------------------------------------------------------------
 const BOONS_DATA = [
     // Standard Boons
     { id: "boon-delete", name: "Delete Button", type: "Standard", description: 'Use this at any point in the session to "insta-kill" an upcoming boss. Characters rolled for the "insta-killed" boss will still be cycled out, and the boss will be counted as a clear.' },
@@ -289,11 +309,11 @@ const BOONS_DATA = [
 // ----------------------------------------------------------------------
 const CHAR_IMAGE_MAP = {
     // ... CHAR_IMAGE_MAP data remains unchanged ...
-    "Aino": "images/aino.png", "Albedo": "images/albedo.png", "Alhaitham": "images/alhaitham.png", "Alloy": "images/alloy.png", "Amber": "images/amber.png", "Arlecchino": "images/arlecchino.png", "Arrataki Itto": "images/itto.png", "Ayaka": "images/ayaka.png", "Ayato": "images/ayato.png", "Baizhu": "images/baizhu.png", "Barbara": "images/barbara.png", "Beidou": "images/beidou.png", "Bennett": "images/bennett.png", "Candace": "images/candace.png", "Chasca": "images/chasca.png", "Charlotte": "images/charlotte.png", "Chevreuse": "images/chevreuse.png", "Childe": "images/tartaglia.png", "Chiori": "images/chiori.png", "Chongyun": "images/chongyun.png", "Citlali": "images/citlali.png", "Clorinde": "images/clorinde.png", "Collei": "images/collei.png", "Cyno": "images/cyno.png", "Dahlia": "images/dahlia.png", "Dehya": "images/dehya.png", "Diluc": "images/diluc.png", "Diona": "images/diona.png", "Dori": "images/dori.png", "Emilie": "images/emilie.png", "Escoffier": "images/escoffier.png", "Eula": "images/eula.png", "Faruzan": "images/faruzan.png", "Fischl": "images/fischl.png", "Flins": "images/flins.png", "Freminet": "images/freminet.png", "Furina": "images/furina.png", "Gaming": "images/gaming.png", "Ganyu": "images/ganyu.png", "Gorou": "images/gorou.png", "Heizou": "images/heizou.png", "Hu Tao": "images/hutao.png", "Iansan": "images/iansan.png", "Ifa": "images/ifa.png", "Ineffa": "images/ineffa.png", "Jean": "images/jean.png", "Kachina": "images/kachina.png", "Kaeya": "images/kaeya.png", "Kazuha": "images/kazuha.png", "Kaveh": "images/kaveh.png", "Keqing": "images/keqing.png", "Kinich": "images/kinich.png", "Kirara": "images/kirara.png", "Klee": "images/klee.png", "Kokomi": "images/kokomi.png", "Kuki Shinobu": "images/kukishinobu.png", "Kujou Sara": "images/sara.png", "Lauma": "images/lauma.png", "Lan yan": "images/lanyan.png", "Layla": "images/layla.png", "Lisa": "images/lisa.png", "Lyney": "images/lyney.png", "Lynette": "images/lynette.png", "Mavuika": "images/mavuika.png", "Mika": "images/mika.png", "Mizuki": "images/mizuki.png", "Mona": "images/mona.png", "Mualani": "images/mualani.png", "Nahida": "images/nahida.png", "Navia": "images/navia.png", "Nefer": "images/nefer.png", "Neuvilette": "images/neuvilette.png", "Nilou": "images/nilou.png", "Ningguang": "images/ningguang.png", "Noelle": "images/noelle.png", "Ororon": "images/ororon.png", "Qiqi": "images/qiqi.png", "Raiden Shogun": "images/raiden.png", "Razor": "images/razor.png", "Rosaria": "images/rosaria.png", "Sayu": "images/sayu.png", "Sethos": "images/sethos.png", "Shenhe": "images/shenhe.png", "Sigewinne": "images/sigewinne.png", "Skirk": "images/skirk.png", "Sucrose": "images/sucrose.png", "Thoma": "images/thoma.png", "Tighnari": "images/tighnari.png", "Traveler": "images/traveler.png", "Varesa": "images/varesa.png", "Venti": "images/venti.png", "Wanderer": "images/wanderer.png", "Wriothesley": "images/wriothesley.png", "Xiao": "images/xiao.png", "Xianyun": "images/xianyun.png", "Xiangling": "images/xiangling.png", "Xilonen": "images/xilonen.png", "Xingqiu": "images/xingqiu.png", "Xinyan": "images/xinyan.png", "Yae Miko": "images/yae_miko.png", "Yanfei": "images/yanfei.png", "Yao Yao": "images/yaoyao.png", "Yelan": "images/yelan.png", "Yoimiya": "images/yoimiya.png", "Yunjin": "images/yunjin.png", "Zhongli": "images/zhongli.png", "DEFAULT_PATH": "images/placeholder.png" 
+    "Aino": "images/aino.png", "Albedo": "images/albedo.png", "Alhaitham": "images/alhaitham.png", "Aloy": "images/alloy.png", "Amber": "images/amber.png", "Arlecchino": "images/arlecchino.png", "Arrataki Itto": "images/itto.png", "Ayaka": "images/ayaka.png", "Ayato": "images/ayato.png", "Baizhu": "images/baizhu.png", "Barbara": "images/barbara.png", "Beidou": "images/beidou.png", "Bennett": "images/bennett.png", "Candace": "images/candace.png", "Chasca": "images/chasca.png", "Charlotte": "images/charlotte.png", "Chevreuse": "images/chevreuse.png", "Childe": "images/tartaglia.png", "Chiori": "images/chiori.png", "Chongyun": "images/chongyun.png", "Citlali": "images/citlali.png", "Clorinde": "images/clorinde.png", "Collei": "images/collei.png", "Cyno": "images/cyno.png", "Dahlia": "images/dahlia.png", "Dehya": "images/dehya.png", "Diluc": "images/diluc.png", "Diona": "images/diona.png", "Dori": "images/dori.png", "Emilie": "images/emilie.png", "Escoffier": "images/escoffier.png", "Eula": "images/eula.png", "Faruzan": "images/faruzan.png", "Fischl": "images/fischl.png", "Flins": "images/flins.png", "Freminet": "images/freminet.png", "Furina": "images/furina.png", "Gaming": "images/gaming.png", "Ganyu": "images/ganyu.png", "Gorou": "images/gorou.png", "Heizou": "images/heizou.png", "Hu Tao": "images/hutao.png", "Iansan": "images/iansan.png", "Ifa": "images/ifa.png", "Ineffa": "images/ineffa.png", "Jean": "images/jean.png", "Kachina": "images/kachina.png", "Kaeya": "images/kaeya.png", "Kazuha": "images/kazuha.png", "Kaveh": "images/kaveh.png", "Keqing": "images/keqing.png", "Kinich": "images/kinich.png", "Kirara": "images/kirara.png", "Klee": "images/klee.png", "Kokomi": "images/kokomi.png", "Kuki Shinobu": "images/kukishinobu.png", "Kujou Sara": "images/sara.png", "Lauma": "images/lauma.png", "Lan yan": "images/lanyan.png", "Layla": "images/layla.png", "Lisa": "images/lisa.png", "Lyney": "images/lyney.png", "Lynette": "images/lynette.png", "Mavuika": "images/mavuika.png", "Mika": "images/mika.png", "Mizuki": "images/mizuki.png", "Mona": "images/mona.png", "Mualani": "images/mualani.png", "Nahida": "images/nahida.png", "Navia": "images/navia.png", "Nefer": "images/nefer.png", "Neuvilette": "images/neuvilette.png", "Nilou": "images/nilou.png", "Ningguang": "images/ningguang.png", "Noelle": "images/noelle.png", "Ororon": "images/ororon.png", "Qiqi": "images/qiqi.png", "Raiden Shogun": "images/raiden.png", "Razor": "images/razor.png", "Rosaria": "images/rosaria.png", "Sayu": "images/sayu.png", "Sethos": "images/sethos.png", "Shenhe": "images/shenhe.png", "Sigewinne": "images/sigewinne.png", "Skirk": "images/skirk.png", "Sucrose": "images/sucrose.png", "Thoma": "images/thoma.png", "Tighnari": "images/tighnari.png", "Traveler": "images/traveler.png", "Varesa": "images/varesa.png", "Venti": "images/venti.png", "Wanderer": "images/wanderer.png", "Wriothesley": "images/wriothesley.png", "Xiao": "images/xiao.png", "Xianyun": "images/xianyun.png", "Xiangling": "images/xiangling.png", "Xilonen": "images/xilonen.png", "Xingqiu": "images/xingqiu.png", "Xinyan": "images/xinyan.png", "Yae Miko": "images/yaemiko.png", "Yanfei": "images/yanfei.png", "Yao Yao": "images/yaoyao.png", "Yelan": "images/yelan.png", "Yoimiya": "images/yoimiya.png", "Yunjin": "images/yunjin.png", "Zhongli": "images/zhongli.png", "DEFAULT_PATH": "images/placeholder.png" 
 };
 
 
-// --- BOON LOGIC (MODIFIED FOR ACTIVATION) ---
+// --- BOON LOGIC (MODIFIED FOR ACTIVATION POP-UP) ---
 /**
  * Renders all boons from BOONS_DATA into their respective containers.
  */
@@ -382,7 +402,7 @@ function handleBoonChange() {
 }
 
 /**
- * NEW FUNCTION: Updates the state and text of the Activate Boon button.
+ * Updates the state and text of the Activate Boon button.
  */
 function updateBoonActivationButton() {
     const button = document.getElementById('btn-activate-boon');
@@ -403,7 +423,7 @@ function updateBoonActivationButton() {
 
 
 /**
- * NEW FUNCTION: Handles the activation of a one-time-use boon.
+ * MODIFIED FUNCTION: Handles the activation of a one-time-use boon and shows a confirmation pop-up.
  */
 function handleBoonActivation() {
     // 1. Check game state prerequisites
@@ -449,27 +469,29 @@ function handleBoonActivation() {
     // 4. Apply Boon Effect
     let success = false;
     let effectMessage = "";
+    let confirmTitle = "";
+    
+    // Get the boon description for the pop-up
+    const fullBoonData = BOONS_DATA.find(b => b.name === boonToActivate);
 
     if (boonToActivate === "Delete Button") {
-        // 'Use this at any point in the session to "insta-kill" an upcoming boss.'
-        
         // Log the current boss as cleared with 0 score
         currentScore += 0;
         const bossEntry = `[Score 0/4] ${currentBossToLog} (Cleared with Delete Button)`;
         rolledBosses.push(bossEntry);
 
-        effectMessage = `**${boonToActivate}** used! ${currentBossToLog} logged as a clear (0 penalty).`;
+        confirmTitle = `Boon Activated: ${boonToActivate}`;
+        effectMessage = `The boss **${currentBossToLog}** has been "insta-killed" and logged as a clear (0 penalty). A new boss has been rolled.`;
         success = true;
 
     } else if (boonToActivate === "Jasmine’s Blessing (Legendary)") {
-        // 'Use this at any point in the session to trade places with Jasmine to clear the boss.'
-        
         // Log the current boss as cleared with 0 score (Implicit clear)
         currentScore += 0;
         const bossEntry = `[Score 0/4] ${currentBossToLog} (Cleared with Jasmine's Blessing)`;
         rolledBosses.push(bossEntry);
 
-        effectMessage = `**${boonToActivate}** used! ${currentBossToLog} cleared by Jasmine (0 penalty).`;
+        confirmTitle = `Legendary Boon Activated: ${boonToActivate}`;
+        effectMessage = `Jasmine has traded places and cleared **${currentBossToLog}** (0 penalty). A new boss has been rolled.`;
         success = true;
     }
     
@@ -487,7 +509,9 @@ function handleBoonActivation() {
         updateStatus(rotationSize);
         updateBoonActivationButton(); // Update button state
         
-        alert(effectMessage);
+        // **NEW: Show Confirmation Pop-up**
+        const alertContent = `${confirmTitle}\n\nEffect: ${fullBoonData.description}\n\nOutcome: ${effectMessage}`;
+        alert(alertContent);
     }
 }
 
@@ -514,7 +538,7 @@ function handleNextBossRollAfterActivation() {
         currentBossToLog = nextBoss.name;
         updateCurrentBossDisplay(nextBoss);
         // Ensure button text is correct
-        document.getElementById('btn-roll-next').textContent = 'Log Run & Roll Next Boss';
+        document.getElementById('btn-roll-next').textContent = 'Roll Next Boss';
     } else {
          // If pool was empty
          updateCurrentBossDisplay(null); 
@@ -617,7 +641,7 @@ updateBossPoolStatus();
 displayBossBanList();
 }
 
-// --- CATEGORICAL BAN RANDOMIZER LOGIC (UPDATED) ---
+// --- CATEGORICAL BAN RANDOMIZER LOGIC (UNCHANGED) ---
 
 function runCategoryBan() {
     // PREREQUISITE CHECK - Only need exclusion to be generated
@@ -859,11 +883,7 @@ function handleBossRoll() {
         showFinalScoreModal(rotationSize);
         document.getElementById('btn-quick-reroll').style.display = 'none';
         document.getElementById('btn-roll-next').textContent = 'Rotation Complete!';
-        
-        // Final UI updates
-        updateRolledList();
-        updateScoreDisplay();
-        updateStatus(rotationSize);
+        document.getElementById('btn-roll-next').disabled = true;
         return;
     }
     
@@ -995,7 +1015,7 @@ function resetBossRotation() {
 }
 
 
-// --- CHARACTER ROLL LOGIC (UNCHANGED) ---
+// --- CHARACTER ROLL LOGIC (MODIFIED) ---
 
 function randomizeCharacters(count) {
     // PREREQUISITE CHECK - Only need exclusion to be generated
@@ -1004,23 +1024,43 @@ function randomizeCharacters(count) {
         return;
     }
 
-    // 1. Reset squad and clear display
+    // 1. Clear previous squad and display
     currentRolledSquad.length = 0;
     const display = document.getElementById('character-display');
     display.innerHTML = '';
-    document.getElementById('selection-message').style.display = 'none';
+    const selectionMessage = document.getElementById('selection-message');
+    selectionMessage.textContent = "You must select at least 4 characters used before confirming.";
+    
+    // **NEW LOGIC START: Filter pool if 'Four-Star Impact' is active**
+    let poolToRollFrom = [...characterPool]; // Start with the full current pool
+    
+    // Check if the "Four-Star Impact" boon is active
+    if (activeBoons.includes("Four-Star Impact")) {
+        // Filter out all known 5-star characters to enforce "4 star only" rolls
+        poolToRollFrom = poolToRollFrom.filter(char => !fiveStarCharacters.includes(char));
+        selectionMessage.textContent = `"Four-Star Impact" active! Rolling only from the ${poolToRollFrom.length} available 4-star characters.`;
+        selectionMessage.style.display = 'block';
+    } else {
+        selectionMessage.style.display = 'none';
+    }
+    // **NEW LOGIC END**
 
-    if (characterPool.length < count) {
-        display.innerHTML = `<p style="color: red; font-weight: bold;">Error: Only ${characterPool.length} characters remaining in the pool. Reset the character list to continue.</p>`;
+    // MODIFIED LOGIC: Roll based on available pool size if it's less than the requested count (8)
+    const actualRollCount = Math.min(count, poolToRollFrom.length);
+
+    // Check if the pool is empty (no characters available after filtering/elimination)
+    if (actualRollCount === 0) {
+        display.innerHTML = '<p style="color: red; font-weight: bold;">Error: The character pool is empty. Reset lists to continue.</p>';
         document.getElementById('btn-roll-chars').style.display = 'inline-block';
         document.getElementById('btn-reroll-chars').style.display = 'none';
         document.getElementById('btn-confirm-usage').disabled = true; 
         return;
     }
 
-    // 2. Select random characters without replacement
-    let tempPool = [...characterPool];
-    for (let i = 0; i < count; i++) {
+    // 2. Randomize the squad (without replacement)
+    // Use the potentially filtered poolToRollFrom for the actual roll
+    let tempPool = [...poolToRollFrom]; 
+    for (let i = 0; i < actualRollCount; i++) { // Use actualRollCount to ensure we only draw what's available
         const randomIndex = Math.floor(Math.random() * tempPool.length);
         const charName = tempPool.splice(randomIndex, 1)[0];
         currentRolledSquad.push(charName);
@@ -1089,6 +1129,7 @@ function rerollCharacters() {
     selectionMessage.style.display = 'none';
     document.getElementById('btn-confirm-usage').disabled = true;
 
+    // This call uses the same logic as the initial roll, ensuring the "Four-Star Impact" boon filter is applied again.
     randomizeCharacters(8); 
 }
 
@@ -1103,13 +1144,38 @@ function confirmUsedCharacters() {
         return;
     }
 
-    // Remove selected characters from the main pool
-    updateCharacterPool(selectedChars);
+    let charsToEliminate = selectedChars;
 
+    // --- NEW LOGIC FOR "Four-Star Impact" BOON (Elimination Logic) ---
+    if (activeBoons.includes("Four-Star Impact")) {
+        // Filter the selected characters: only keep 5-star characters (i.e., those NOT in the FOUR_STAR_CHARS list).
+        const fourStarsPreserved = selectedChars.filter(name => FOUR_STAR_CHARS.includes(name));
+        
+        // Note: Characters in charsToEliminate are 5-stars if the boon is active (based on the provided list)
+        charsToEliminate = selectedChars.filter(name => !FOUR_STAR_CHARS.includes(name));
+        
+        if (charsToEliminate.length === 0) {
+            selectionMessage.textContent = `"Four-Star Impact" active. All ${fourStarsPreserved.length} selected characters are 4-stars and were preserved. Pool size remains unchanged.`;
+        } else {
+            selectionMessage.textContent = `"Four-Star Impact" active. ${charsToEliminate.length} 5-stars eliminated. ${fourStarsPreserved.length} 4-stars preserved.`;
+        }
+        selectionMessage.style.display = 'block';
+    }
+    // --- END NEW LOGIC ---
+
+    // Remove selected characters from the main pool
+    if (charsToEliminate.length > 0) {
+        updateCharacterPool(charsToEliminate);
+    }
+    
     // Clear the character display and squad
     currentRolledSquad.length = 0;
     document.getElementById('character-display').innerHTML = '<p>Character usage confirmed. Click "Roll Characters" to generate the next squad.</p>';
-    selectionMessage.style.display = 'none';
+    // If the boon wasn't active, ensure the generic selection message is hidden
+    if (!activeBoons.includes("Four-Star Impact")) {
+        selectionMessage.style.display = 'none';
+    }
+
 
     // Reset button visibility (Show Roll, Hide Reroll, Disable Confirm)
     document.getElementById('btn-roll-chars').style.display = 'inline-block';
