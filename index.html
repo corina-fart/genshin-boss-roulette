@@ -107,13 +107,17 @@
 
 <div class="scoring-section" id="scoring-area">
 <h2>How many of you threw?</h2>
-<p>Select the penalty score (0-4) *before* rolling, then click **Roll Next Boss** to log the previous result and roll the next.</p>
+<p>Select the penalty score (0-8) *before* rolling, then click **Roll Next Boss** to log the previous result and roll the next.</p>
 <div class="score-controls">
 <label><input type="radio" name="penalty_score" value="0" checked> 0</label>
 <label><input type="radio" name="penalty_score" value="1"> 1</label>
 <label><input type="radio" name="penalty_score" value="2"> 2</label>
 <label><input type="radio" name="penalty_score" value="3"> 3</label>
 <label><input type="radio" name="penalty_score" value="4"> 4</label>
+<label><input type="radio" name="penalty_score" value="5"> 5</label>
+<label><input type="radio" name="penalty_score" value="6"> 6</label>
+<label><input type="radio" name="penalty_score" value="7"> 7</label>
+<label><input type="radio" name="penalty_score" value="8"> 8</label>
 </div>
 </div>
 
@@ -477,7 +481,8 @@ function handleBoonActivation() {
     if (boonToActivate === "Delete Button") {
         // Log the current boss as cleared with 0 score
         currentScore += 0;
-        const bossEntry = `[Score 0/4] ${currentBossToLog} (Cleared with Delete Button)`;
+        // UPDATED: Changed 4 to 8
+        const bossEntry = `[Score 0/8] ${currentBossToLog} (Cleared with Delete Button)`;
         rolledBosses.push(bossEntry);
 
         confirmTitle = `Boon Activated: ${boonToActivate}`;
@@ -487,7 +492,8 @@ function handleBoonActivation() {
     } else if (boonToActivate === "Jasmine’s Blessing (Legendary)") {
         // Log the current boss as cleared with 0 score (Implicit clear)
         currentScore += 0;
-        const bossEntry = `[Score 0/4] ${currentBossToLog} (Cleared with Jasmine's Blessing)`;
+        // UPDATED: Changed 4 to 8
+        const bossEntry = `[Score 0/8] ${currentBossToLog} (Cleared with Jasmine's Blessing)`;
         rolledBosses.push(bossEntry);
 
         confirmTitle = `Legendary Boon Activated: ${boonToActivate}`;
@@ -569,11 +575,12 @@ function toggleBoonsDropdown() {
 // --- END BOON LOGIC ---
 
 
-// --- SCOREBOARD UTILITIES (UNCHANGED) ---
+// --- SCOREBOARD UTILITIES (MODIFIED) ---
 function updateScoreDisplay() {
 const rotationInput = document.getElementById('boss-rotation-input');
 const rotationSize = parseInt(rotationInput.value);
-const maxPossibleScore = rotationSize * 4;
+// UPDATED: Changed 4 to 8
+const maxPossibleScore = rotationSize * 8;
 document.getElementById('score-max').textContent = `Max: ${maxPossibleScore}`;
 document.getElementById('score-current').textContent = `Current: ${currentScore}`;
 }
@@ -778,7 +785,7 @@ displayExclusionList();
 }
 
 
-// --- BOSS ROLL CORE LOGIC (UNCHANGED) ---
+// --- BOSS ROLL CORE LOGIC (MODIFIED) ---
 
 /**
  * Rolls a single boss, removes it from the pool (unless Boomerang Effect is active), and returns the boss object.
@@ -873,7 +880,8 @@ function handleBossRoll() {
     
     // 1. Log the currently displayed boss (Boss A)
     currentScore += selectedScore;
-    const bossEntry = `[Score ${selectedScore}/4] ${currentBossToLog}`;
+    // UPDATED: Changed 4 to 8
+    const bossEntry = `[Score ${selectedScore}/8] ${currentBossToLog}`;
     rolledBosses.push(bossEntry);
     currentBossToLog = null;
     
@@ -905,7 +913,8 @@ function handleBossRoll() {
         if (i < actualRolls - 1) { 
             // Log it immediately (Boss B, C, etc.)
             currentScore += selectedScore;
-            const logEntry = `[Score ${selectedScore}/4] ${rolledBoss.name}`;
+            // UPDATED: Changed 4 to 8
+            const logEntry = `[Score ${selectedScore}/8] ${rolledBoss.name}`;
             rolledBosses.push(logEntry);
             
             // If rotation is complete mid-batch
@@ -1324,10 +1333,11 @@ function resetCharacterLists() {
 }
 
 
-// --- MODAL LOGIC (UNCHANGED) ---
+// --- MODAL LOGIC (MODIFIED) ---
 
 function showFinalScoreModal(rotationSize) {
-const maxPossibleScore = rotationSize * 4;
+// UPDATED: Changed 4 to 8
+const maxPossibleScore = rotationSize * 8;
 const percentage = ((currentScore / maxPossibleScore) * 100).toFixed(1);
 
 document.getElementById('modal-score-current').textContent = currentScore;
