@@ -95,7 +95,7 @@ color: #0a3a7c; /* ALL TEXT SET TO DARK BLUE (REQUESTED CHANGE) */
 #page-title {
     font-family: 'Cherry Bomb One', cursive;
     font-size: 2.5em; /* Large size */
-    color: #0a3a7c; /* Dark Blue */
+    color: #ffffff; /* Dark Blue */
     text-align: center;
     margin: 0; 
     padding: 0; 
@@ -107,7 +107,7 @@ position: fixed;
 top: 10px;
 left: 10px;
 z-index: 100;
-background-color: #0a3a7c; /* Very Dark Blue */
+background-color: #7c0a0a; /* Very Dark Blue */
 color: white;
 padding: 8px 15px;
 min-height: 42px; /* Unified button height */
@@ -146,7 +146,7 @@ backdrop-filter: blur(10px); /* Added Blur (REQUESTED CHANGE) */
 padding: 32px;
 border-radius: 12px;
 text-align: left;
-border: 1px solid #0a3a7c; /* DIV LINE CHANGE: Dark Blue Border */
+
 }
 
 /* --- GRID AREA DEFINITIONS & Background Overrides --- */
@@ -193,7 +193,6 @@ box-shadow: none; /* Removed Drop Shadow (REQUESTED CHANGE) */
 .category-ban-randomizer h3,
 .boons-selector h3 { /* NEW: Boons Selector H3 */
     font-family: 'Cherry Bomb One', cursive;
-    border-bottom: none; /* Removed Border (REQUESTED CHANGE) */
     padding-bottom: 16px;
     margin-bottom: 30px;
     margin-top: 0;
@@ -607,7 +606,7 @@ border-radius: 6px;
 cursor: pointer;
 border: none;
 transition: background-color 0.3s;
-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+box-shadow: none;
 /* *** MODIFICATION: Force all button text to WHITE *** */
 color: white !important; 
 /* *** MODIFICATION: CHANGE BUTTON FONT *** */
@@ -655,7 +654,7 @@ background-color: #4285f4; /* Lighter on hover */
 /* Button for confirming used characters (Reusing Primary style, applying new color) */
 #btn-confirm-usage {
 /* *** MODIFICATION: CHANGE BACKGROUND COLOR *** */
-background-color: #0a3a7c; /* Darkest Blue */
+background-color: #30578a; /* Darkest Blue */
 color: white;
 font-size: 1.1em;
 margin-top: 15px;
@@ -676,10 +675,10 @@ margin-bottom: 25px;
 /* Reset Button Styling (Now Darkest Blue, was medium-light blue) */
 .btn-reset {
 /* *** MODIFICATION: CHANGE BACKGROUND COLOR & TEXT COLOR *** */
-background-color: #0a3a7c; /* Darkest Blue */
+background-color: #a52727; /* Darkest Blue */
 }
 .btn-reset:hover {
-background-color: #1a73e8; /* Lighter on hover */
+background-color: #550b0b; /* Lighter on hover */
 }
 
 /* New styling for the combined reset/reroll button */
@@ -865,5 +864,82 @@ font-size: 1.5em;
     
     .boon-item {
         min-width: auto; /* Reset min-width again for better flow */
+    }
+}
+
+/* =======================================
+   RESPONSIVE MEDIA QUERY FOR PHONE VIEWPORT
+   ======================================= */
+
+@media (max-width: 768px) {
+    /* 1. Base Container Adjustments */
+    body {
+        padding-top: 10px;
+    }
+    
+    .card {
+        padding: 15px; /* Reduce card padding */
+        margin-bottom: 15px; /* Reduce spacing between sections */
+        box-shadow: none; /* Reduce shadow size */
+    }
+    
+    /* 2. Main Layout Stack (The core responsive change) */
+    .page-layout {
+        /* Force a single column for stacking */
+        grid-template-columns: 1fr; 
+        gap: 15px; /* Reduce gap between stacked sections */
+    }
+
+    /* 3. Ensure all columns take the full width */
+    .left-column,
+    .boss-randomizer,
+    .sidebar,
+    .full-width-character-selector {
+        grid-column: 1 / 2;
+        /* Reset any explicit order if it was set for larger screens */
+        order: initial; 
+    }
+    
+    /* 4. Improve Usability for Buttons and Forms */
+    
+    /* Make button groups stack vertically on mobile */
+    .button-group {
+        flex-direction: column;
+    }
+
+    .button-group button {
+        min-width: unset;
+        width: 100%; /* Full width buttons for easy tapping */
+    }
+    
+    /* Ensure the inline control groups wrap properly */
+    .controls-area {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    /* Adjust score controls for better tapping (e.g., wrap two or three per row) */
+    .score-controls {
+        gap: 8px;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+    
+    .score-controls label {
+        flex-basis: 45%; /* Approximately two per row */
+    }
+    
+    /* Adjust character card size to fit more on a smaller screen */
+    .character-card {
+        width: 100px; 
+    }
+
+    .char-image-placeholder {
+        height: 100px; 
+    }
+
+    /* Adjust boon list to single column for better readability */
+    #boon-list-master {
+        grid-template-columns: 1fr; 
     }
 }
