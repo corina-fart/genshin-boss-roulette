@@ -27,12 +27,12 @@ background-position: center;
 background-attachment: fixed;
 /* ======================================================= */
 
-color: #0a3a7c; /* ALL TEXT SET TO DARK BLUE (REQUESTED CHANGE) */
+color: #ffffff; /* ALL TEXT SET TO DARK BLUE (REQUESTED CHANGE) */
 }
 
 /* --- NEW STYLE: MAIN PAGE TITLE --- */
 #page-title {
-    font-family: 'Cherry Bomb One', cursive;
+    font-family: 'Quicksand', Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
     font-size: 2.5em; /* Large size */
     color: #0a3a7c; /* Dark Blue */
     text-align: center;
@@ -62,7 +62,7 @@ padding-top: 100px; /* INCREASED padding to make space for the new title and fix
 background-color: #e6e9f0;
 
 /* 2. Placeholder image (REPLACE 'your-background-image.jpg' with your desired image URL or local path) */
-background-image: url('images/rain-petal-background.gif'); 
+background-image: url('images/rain-background.gif'); 
 
 /* 3. Ensure image covers the whole screen */
 background-size: cover; 
@@ -74,7 +74,7 @@ background-position: center;
 background-attachment: fixed;
 /* ======================================================= */
 
-color: #0a3a7c; /* ALL TEXT SET TO DARK BLUE (REQUESTED CHANGE) */
+color: #ffffff; /* ALL TEXT SET TO DARK BLUE (REQUESTED CHANGE) */
 }
 
 /* --- NEW STYLE: MAIN PAGE TITLE WRAPPER --- */
@@ -101,7 +101,7 @@ color: #0a3a7c; /* ALL TEXT SET TO DARK BLUE (REQUESTED CHANGE) */
     padding: 0; 
 }
 
-/* --- FIXED RESET BUTTON (Darkest Blue for Severity) --- */
+
 #btn-reset-all {
 position: fixed;
 top: 10px;
@@ -192,12 +192,12 @@ box-shadow: none; /* Removed Drop Shadow (REQUESTED CHANGE) */
 .full-width-character-selector > h1,
 .category-ban-randomizer h3,
 .boons-selector h3 { /* NEW: Boons Selector H3 */
-    font-family: 'Cherry Bomb One', cursive;
+    font-family: 'Quicksand', sans-serif;
     padding-bottom: 16px;
     margin-bottom: 30px;
     margin-top: 0;
     text-align: left;
-    color: #0a3a7c; /* Ensure headers are Dark Blue (REQUESTED CHANGE) */
+    color: #ffffff;
 }
 .boons-selector h3 {
     margin-bottom: 15px; /* Adjust spacing for boon sub-headers */
@@ -207,8 +207,6 @@ box-shadow: none; /* Removed Drop Shadow (REQUESTED CHANGE) */
     margin-top: 15px;
 }
 
-
-/* H2s now use Cherry Bomb One (REVERTED) */
 .boss-randomizer > h2,
 .full-width-character-selector > h2,
 .left-column h2, /* MODIFIED: Use descendant selector (space) to target nested H2s like the Exclusion List header */
@@ -216,18 +214,18 @@ box-shadow: none; /* Removed Drop Shadow (REQUESTED CHANGE) */
 .boons-selector h2, /* NEW: Boons Selector H2 */
 .sidebar h2,
 .modal-content h2 { /* Added modal H2 */
-    font-family: 'Cherry Bomb One', cursive;
+    font-family: 'Quicksand', sans-serif;
     border-bottom: none; /* Removed Border (REQUESTED CHANGE) */
     padding-bottom: 16px;
     margin-bottom: 30px;
     margin-top: 0;
     text-align: left;
-    color: #0a3a7c; /* Set to Dark Blue (REQUESTED CHANGE) */
+    color: #ffffff; 
 }
 
 /* Ensure main H1s have their correct color and margin */
 .boss-randomizer h1 {
-color: #0a3a7c; /* Set to Dark Blue (REQUESTED CHANGE) */
+color: #ffffff; 
 }
 
 /* Override the general H2 style for the internal Scoring H2 (removes border) */
@@ -236,13 +234,13 @@ border-bottom: none;
 padding-bottom: 0;
 margin-bottom: 10px;
 margin-top: 0;
-color: #0a3a7c; /* Set to Dark Blue (REQUESTED CHANGE) */
+color: #ffffff; 
 /* No need to re-set font as it inherits Cherry Bomb One from the H2 block above */
 }
 
 /* Sidebar H2 now uses dark blue */
 .sidebar h2 {
-color: #0a3a7c; /* Set to Dark Blue (REQUESTED CHANGE) */
+color: #ffffff; 
 font-size: 1.3em;
 }
 
@@ -332,7 +330,7 @@ font-size: 1.3em;
     display: block;
     cursor: pointer;
     font-weight: bold;
-    color: #0a3a7c;
+    color: #ffffff;
 }
 .boon-description {
     font-size: 0.85em;
@@ -391,7 +389,7 @@ justify-content: space-around;
 font-weight: bold;
 font-size: 1.1em;
 margin-bottom: 15px;
-color: #0a3a7c; /* Changed text color to Dark Blue */
+color: #ffffff; /* Changed text color to Dark Blue */
 }
 
 .score-controls {
@@ -407,7 +405,7 @@ border-top: 1px solid #0a3a7c; /* DIV LINE CHANGE: Dark Blue Border */
 .char-name {
 /* CHANGED: From #e0e0e0 (gray) to white with 40% opacity */
 background-color: rgba(255, 255, 255, 0.4); 
-color: #0a3a7c; /* Changed text color to Dark Blue (REQUESTED CHANGE) */
+color: #ffffff; /* Changed text color to Dark Blue (REQUESTED CHANGE) */
 padding: 5px 10px; /* Adjusted padding */
 border-radius: 4px;
 font-size: 0.85em; /* Adjusted font size */
@@ -531,7 +529,7 @@ border-radius: 8px;
 #character-display p {
 padding: 10px 0;
 margin: 0;
-color: #0a3a7c; /* Changed text color to Dark Blue (REQUESTED CHANGE) */
+color: #ffffff; /* Changed text color to Dark Blue (REQUESTED CHANGE) */
 }
 /* ... rest of the existing CSS ... */
 
@@ -543,11 +541,10 @@ margin-bottom: 30px;
 
 /* --- BOSS NAME FONT CHANGE --- */
 #boss-name {
-    /* MODIFIED: Change font to Cherry Bomb One and make it bigger */
     font-family: 'Cherry Bomb One', cursive;
     font-size: 2.2em; /* Made bigger */
     margin-bottom: 10px;
-    color: #0a3a7c;
+    color: #ffffff;
 }
 /* ----------------------------- */
 
@@ -567,7 +564,7 @@ font-weight: bold;
 margin-top: 5px;
 margin-bottom: 0;
 padding: 0 10px;
-color: #0a3a7c; /* Changed text color to Dark Blue (REQUESTED CHANGE) */
+color: #ffffff; /* Changed text color to Dark Blue (REQUESTED CHANGE) */
 font-style: italic;
 }
 
@@ -592,9 +589,9 @@ padding: 5px;
 border-radius: 4px;
 /* Set input background to be transparent pink, border to white */
 background-color: rgba(255, 192, 203, 0.4); 
-border: 1px solid #0a3a7c; /* DIV LINE CHANGE: Was white, now Dark Blue */
+border: 1px solid #ffffff; /* DIV LINE CHANGE: Was white, now Dark Blue */
 text-align: center;
-color: #0a3a7c; /* Changed text color to Dark Blue (REQUESTED CHANGE) */
+color: #ffffff; /* Changed text color to Dark Blue (REQUESTED CHANGE) */
 }
 
 /* General Button Styling: All buttons inherit this base style */
@@ -610,7 +607,7 @@ box-shadow: none;
 /* *** MODIFICATION: Force all button text to WHITE *** */
 color: white !important; 
 /* *** MODIFICATION: CHANGE BUTTON FONT *** */
-font-family: 'Cherry Bomb One', cursive; 
+font-family: 'Quicksand', sans-serif;
 font-weight: 400; /* Ensure the font is applied */
 }
 
@@ -759,10 +756,10 @@ color: #0a3a7c;
 font-size: 1.8em;
 }
 #modal-score-max {
-color: #0a3a7c; 
+color: #ffffff; 
 }
 #modal-score-percentage {
-color: #0a3a7c; 
+color: #ffffff; 
 margin-top: 15px;
 font-size: 1.5em;
 }
@@ -773,7 +770,7 @@ font-size: 1.5em;
 #boss-pool-status, 
 #current-pool-status, 
 .boss-randomizer p:last-child {
-    color: #0a3a7c !important;
+    color: #ffffff !important;
 }
 
 /* ======================================= */
