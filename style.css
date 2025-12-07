@@ -15,7 +15,7 @@ padding-top: 100px; /* INCREASED padding to make space for the new title and fix
 background-color: #e6e9f0;
 
 /* 2. Placeholder image (REPLACE 'your-background-image.jpg' with your desired image URL or local path) */
-background-image: url('images/rain-petal-background.gif'); 
+background-image: url('images/rain-background.gif'); 
 
 /* 3. Ensure image covers the whole screen */
 background-size: cover; 
