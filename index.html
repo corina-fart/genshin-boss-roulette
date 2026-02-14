@@ -44,7 +44,7 @@
     <div class="exclusion-generator" style="margin-top: 0;"> <h2>Character Bans</h2>
         <div class="control-group" style="justify-content: flex-start; margin-bottom: 20px;">
             <label for="exclusion-count-input" style="font-weight: bold;">Number of character bans:</label>
-            <input type="number" id="exclusion-count-input" value="6" min="1" max="99" style="width: 50px; padding: 5px; border-radius: 4px; background-color: rgba(255, 192, 203, 0.4); border: 1px solid #0a3a7c; border: 1px solid #0a3a7c; text-align: center; color: #0a3a7c;">
+            <input type="number" id="exclusion-count-input" value="6" min="1" max="99" style="width: 50px; padding: 5px; border-radius: 4px; background-color: rgba(255, 192, 203, 0.4); border: 1px solid #0a3a7c; text-align: center; color: #0a3a7c;">
         </div>
         <div id="exclusion-list">
         <p style="color: #0a3a7c; font-weight: normal;">Enter the number of characters to ban.</p>
@@ -58,9 +58,18 @@
     <div class="category-ban-randomizer" style="margin-top: 30px;">
         <p>Step 2: </p>
         <h2>Category Ban</h2>
-        <div id="category-ban-display" style="margin-bottom: 25px;">Roll to determine Character or Boss Bans.</div>
+        <div id="category-ban-display" style="margin-bottom: 15px;">Choose a ban type and amount.</div>
+        
+        <div class="control-group" style="justify-content: flex-start; margin-bottom: 20px; gap: 10px; display: flex; align-items: center;">
+            <select id="ban-type-select" style="padding: 5px; border-radius: 4px; border: 1px solid #0a3a7c; background: white; color: #0a3a7c;">
+                <option value="Bosses">Boss Bans</option>
+                <option value="Characters">Character Bans</option>
+            </select>
+            <input type="number" id="manual-ban-count" value="10" min="1" max="50" style="width: 50px; padding: 5px; border-radius: 4px; background-color: rgba(255, 192, 203, 0.4); border: 1px solid #0a3a7c; text-align: center; color: #0a3a7c;">
+        </div>
+
         <div style="text-align: left; margin-bottom: 30px;">
-        <button class="btn-secondary" id="btn-roll-ban-category" onclick="runCategoryBan()">Roll Ban Category</button>
+        <button class="btn-secondary" id="btn-roll-ban-category" onclick="runCategoryBan()">Apply Bans</button>
         </div>
 
         <h3>Boss Ban List</h3>
@@ -194,7 +203,6 @@ const exclusionList = [];
 
 // --- DATA ARRAYS (Definitions) ---
 const initialBosses = [
-// Bosses list remains unchanged
 { name: "Geo Hypostasis", description: "Requires at least one Sword, Claymore or Polearm character" },
 { name: "Pyro Hypostasis", description: "Requires at least one Hydro or Cryo character" },
 { name: "Dendro Hypostasis", description: "Requires at least one Dendro or Hydro character" },
@@ -255,7 +263,6 @@ const characters = [
 "Qiqi", "Ganyu", "Chasca", "Faruzan", "Heizou", "Lan yan", "Ifa", "Jean", "Kazuha", "Lynette", "Sayu", "Mizuki", "Sucrose", "Venti", "Xianyun", "Xiao", "Columbina", "Illuga", "Zibai"
 ];
 
-// --- DATA: 4-STAR CHARACTERS FOR "FOUR-STAR IMPACT" BOON (IMPLEMENTED) ---
 const FOUR_STAR_CHARS = [
     "Aino", "Amber", "Barbara", "Beidou", "Bennett", "Candace", "Charlotte", "Chevreuse", 
     "Chongyun", "Collei", "Dahlia", "Diona", "Dori", "Faruzan", "Fischl", "Freminet", 
@@ -266,7 +273,6 @@ const FOUR_STAR_CHARS = [
     "Yunjin", "Thoma", "Jahoda", "Illuga"
 ];
 
-// NEW DATA: Manually classified 5-star characters for boon logic (based on the full 'characters' list)
 const fiveStarCharacters = [
     "Durin", "Dehya", "Diluc", "Hu Tao", "Klee", "Lyney", "Yoimiya", "Arlecchino", "Albedo", 
     "Arrataki Itto", "Chiori", "Zhongli", "Navia", "Ayato", "Childe", "Furina", "Kokomi", 
@@ -275,9 +281,8 @@ const fiveStarCharacters = [
     "Clorinde", "Ayaka", "Eula", "Wriothesley", "Shenhe", "Qiqi", "Ganyu", "Jean", 
     "Kazuha", "Venti", "Xianyun", "Xiao", "Xilonen", "Kinich", "Lauma", "Emilie", "Nefer", "Ineffa", "Flins", "Varesa", "Citlali", "Escoffier", "Skirk", "Chasca", "Mizuki", "Mavuika", "Aloy", "Traveler","Columbina", "Zibai"
 ];
-// ----------------------------------------------------------------------
+
 const BOONS_DATA = [
-    // Standard Boons
     { id: "boon-delete", name: "Delete Button", type: "Standard", description: 'Use this at any point in the session to "insta-kill" an upcoming boss. Characters rolled for the "insta-killed" boss will still be cycled out, and the boss will be counted as a clear.' },
     { id: "boon-starless", name: "Starless, Peerless Night", type: "Standard", description: 'Using 5-star characters with active constellations will contribute to the Death Count, dependent on the 5-star character constellation level. When reaching the final boss, all characters will be brought back from elimination, with all and any character available to use. 2x Roulette EXP upon clearing.' },
     { id: "boon-boomerang", name: "Boomerang Effect", type: "Standard", description: 'Bosses will no longer cycle out of the Boss Wheel for the session.' },
@@ -304,29 +309,23 @@ const BOONS_DATA = [
     { id: "boon-sync", name: "Synchronization Module", type: "Standard", description: 'If a boss is defeated using characters of the same element or region, the Death Count is reduced by 1 point.' },
     { id: "boon-inevitable", name: "The Inevitable", type: "Standard", description: 'The final boss will be guaranteed to be Lord of Eroded Primal Fire, regardless of whether this boss was rolled and defeated/wiped upon previously. Gain double Roulette EXP upon clear.' },
     { id: "boon-wonderland", name: "Wonderland Stage", type: "Standard", description: 'Character use is restricted to Manekin/Manekina only for the session. All weekly boss results will be skipped. Gain double Roulette EXP upon clear.' },
-
-    // Legendary Boons
     { id: "boon-saw-nothing", name: "”We saw nothing. Carry on!” (Legendary)", type: "Legendary", description: 'The first four deaths to occur in the session will not count towards the run\'s Death Count.' },
     { id: "boon-delicious-meal", name: "A Delicious Meal (Legendary)", type: "Legendary", description: 'Non-healing consumables may be used for the entire session (All ATK, Crit, HP, Stamina food buffs).' },
     { id: "boon-jasmine", name: "Jasmine’s Blessing (Legendary)", type: "Legendary", description: 'Use this at any point in the session to trade places with Jasmine to clear the boss. Jasmine will utilize her C6R5 Chasca for the fight regardless of the rolled result. When the boss is either cleared or wiped upon, Jasmine will exit and trade places with the wielder of this boon.' },
     { id: "boon-premium-spin", name: "Premium Spin Club Free Trial (Legendary)", type: "Legendary", description: 'At the start of the session, gain 2 additional reroll tokens. Defeating weekly bosses grants the team +1 reroll token. Using reroll tokens will not count against the run\'s Pristine status and will not dock points.' },
     { id: "boon-priscilla", name: "Priscilla’s Blessing (Legendary)", type: "Legendary", description: 'When this boon is active, and the run is a Flawless clear or higher, all party members will gain an additional +1,000 Komishells, +1,000 Roulette EXP, and +50 Unbroken Standing.' }
 ];
-// ----------------------------------------------------------------------
+
 const CHAR_IMAGE_MAP = {
    "Zibai": "images/zibai.png", "Illuga": "images/illuga.png", "Columbina": "images/columbina.png", "Jahoda": "images/jahoda.png", "Durin": "images/durin.png","Aino": "images/aino.png", "Albedo": "images/albedo.png", "Alhaitham": "images/alhaitham.png", "Aloy": "images/alloy.png", "Amber": "images/amber.png", "Arlecchino": "images/arlecchino.png", "Arrataki Itto": "images/itto.png", "Ayaka": "images/ayaka.png", "Ayato": "images/ayato.png", "Baizhu": "images/baizhu.png", "Barbara": "images/barbara.png", "Beidou": "images/beidou.png", "Bennett": "images/bennett.png", "Candace": "images/candace.png", "Chasca": "images/chasca.png", "Charlotte": "images/charlotte.png", "Chevreuse": "images/chevreuse.png", "Childe": "images/tartaglia.png", "Chiori": "images/chiori.png", "Chongyun": "images/chongyun.png", "Citlali": "images/citlali.png", "Clorinde": "images/clorinde.png", "Collei": "images/collei.png", "Cyno": "images/cyno.png", "Dahlia": "images/dahlia.png", "Dehya": "images/dehya.png", "Diluc": "images/diluc.png", "Diona": "images/diona.png", "Dori": "images/dori.png", "Emilie": "images/emilie.png", "Escoffier": "images/escoffier.png", "Eula": "images/eula.png", "Faruzan": "images/faruzan.png", "Fischl": "images/fischl.png", "Flins": "images/flins.png", "Freminet": "images/freminet.png", "Furina": "images/furina.png", "Gaming": "images/gaming.png", "Ganyu": "images/ganyu.png", "Gorou": "images/gorou.png", "Heizou": "images/heizou.png", "Hu Tao": "images/hutao.png", "Iansan": "images/iansan.png", "Ifa": "images/ifa.png", "Ineffa": "images/ineffa.png", "Jean": "images/jean.png", "Kachina": "images/kachina.png", "Kaeya": "images/kaeya.png", "Kazuha": "images/kazuha.png", "Kaveh": "images/kaveh.png", "Keqing": "images/keqing.png", "Kinich": "images/kinich.png", "Kirara": "images/kirara.png", "Klee": "images/klee.png", "Kokomi": "images/kokomi.png", "Kuki Shinobu": "images/kukishinobu.png", "Kujou Sara": "images/sara.png", "Lauma": "images/lauma.png", "Lan yan": "images/lanyan.png", "Layla": "images/layla.png", "Lisa": "images/lisa.png", "Lyney": "images/lyney.png", "Lynette": "images/lynette.png", "Mavuika": "images/mavuika.png", "Mika": "images/mika.png", "Mizuki": "images/mizuki.png", "Mona": "images/mona.png", "Mualani": "images/mualani.png", "Nahida": "images/nahida.png", "Navia": "images/navia.png", "Nefer": "images/nefer.png", "Neuvilette": "images/neuvilette.png", "Nilou": "images/nilou.png", "Ningguang": "images/ningguang.png", "Noelle": "images/noelle.png", "Ororon": "images/ororon.png", "Qiqi": "images/qiqi.png", "Raiden Shogun": "images/raiden.png", "Razor": "images/razor.png", "Rosaria": "images/rosaria.png", "Sayu": "images/sayu.png", "Sethos": "images/sethos.png", "Shenhe": "images/shenhe.png", "Sigewinne": "images/sigewinne.png", "Skirk": "images/skirk.png", "Sucrose": "images/sucrose.png", "Thoma": "images/thoma.png", "Tighnari": "images/tighnari.png", "Traveler": "images/traveler.png", "Varesa": "images/varesa.png", "Venti": "images/venti.png", "Wanderer": "images/wanderer.png", "Wriothesley": "images/wriothesley.png", "Xiao": "images/xiao.png", "Xianyun": "images/xianyun.png", "Xiangling": "images/xiangling.png", "Xilonen": "images/xilonen.png", "Xingqiu": "images/xingqiu.png", "Xinyan": "images/xinyan.png", "Yae Miko": "images/yaemiko.png", "Yanfei": "images/yanfei.png", "Yao Yao": "images/yaoyao.png", "Yelan": "images/yelan.png", "Yoimiya": "images/yoimiya.png", "Yunjin": "images/yunjin.png", "Zhongli": "images/zhongli.png", "DEFAULT_PATH": "images/placeholder.png" 
 };
 
 function renderBoons() {
-    // Get the master container (which is now the vertical stack parent)
     const masterContainer = document.getElementById('boon-list-master');
-    masterContainer.innerHTML = ''; // Clear contents
-    
-    // Create the Boon Groups (the vertical stacks)
+    masterContainer.innerHTML = ''; 
     const standardGroup = document.createElement('div');
     standardGroup.className = 'boon-group standard-group';
     standardGroup.innerHTML = '<h3>Standard Boons</h3>';
-
     const legendaryGroup = document.createElement('div');
     legendaryGroup.className = 'boon-group legendary-group';
     legendaryGroup.innerHTML = '<h3>Legendary Boons</h3>';
@@ -334,30 +333,24 @@ function renderBoons() {
     BOONS_DATA.forEach(boon => {
         const itemDiv = document.createElement('div');
         itemDiv.className = `boon-item ${boon.type.toLowerCase()}-boon`;
-
         const input = document.createElement('input');
         input.type = 'checkbox';
         input.id = boon.id;
         input.name = 'boon';
         input.value = boon.name;
-        // Check if boon is active and set checkbox state
         if (activeBoons.includes(boon.name)) {
             input.checked = true;
         }
         input.onchange = handleBoonChange;
-
         const label = document.createElement('label');
         label.htmlFor = boon.id;
         label.textContent = boon.name;
-
         const description = document.createElement('p');
         description.className = 'boon-description';
         description.textContent = boon.description;
-
         itemDiv.appendChild(input);
         itemDiv.appendChild(label);
         itemDiv.appendChild(description);
-
         if (boon.type === 'Standard') {
             standardGroup.appendChild(itemDiv);
         } else {
@@ -365,26 +358,18 @@ function renderBoons() {
         }
     });
 
-    // Append the groups directly to the vertical container
     masterContainer.appendChild(standardGroup);
     masterContainer.appendChild(legendaryGroup);
-
-    // Initial call to update the active boons list
     handleBoonChange();
 }
 
-/**
- * Updates the active boons state and the display message, and sets up activation uses.
- */
 function handleBoonChange() {
     activeBoons = [];
-    boonActivationUses = {}; // Reset uses
+    boonActivationUses = {}; 
     const checkboxes = document.querySelectorAll('input[name="boon"]:checked');
     checkboxes.forEach(checkbox => {
         const boonName = checkbox.value;
         activeBoons.push(boonName);
-        
-        // Check for activatable/consumable boons and set initial uses (1 per session)
         if (boonName === "Delete Button" || boonName === "Jasmine’s Blessing (Legendary)") {
             boonActivationUses[boonName] = 1;
         }
@@ -396,20 +381,14 @@ function handleBoonChange() {
     } else {
         listElement.innerHTML = '<strong>Active Boons:</strong> None selected.';
     }
-    
-    // Update activation button text/state
     updateBoonActivationButton(); 
 }
 
-/**
- * Updates the state and text of the Activate Boon button.
- */
 function updateBoonActivationButton() {
     const button = document.getElementById('btn-activate-boon');
     const activatableBoons = Object.keys(boonActivationUses).filter(key => boonActivationUses[key] > 0);
     
     if (activatableBoons.length === 1) {
-        // Show the first word of the boon's name (e.g., "Delete")
         button.textContent = `Activate Boon: ${activatableBoons[0].split(' ')[0]}`;
         button.disabled = false;
     } else if (activatableBoons.length > 1) {
@@ -417,13 +396,11 @@ function updateBoonActivationButton() {
         button.disabled = false;
     } else {
         button.textContent = 'Activate Selected Boon';
-        button.disabled = true; // No activatable boon selected or available
+        button.disabled = true; 
     }
 }
 
-
 function handleBoonActivation() {
-    // 1. Check game state prerequisites
     if (!isExclusionGenerated) {
         alert("Please complete the setup in the left column first: Generate Exclusions.");
         return;
@@ -438,22 +415,17 @@ function handleBoonActivation() {
         return;
     }
 
-    // 2. Identify available activatable boons
     const activatableBoons = Object.keys(boonActivationUses).filter(key => boonActivationUses[key] > 0);
-
     if (activatableBoons.length === 0) {
-        alert("No activatable boons are currently available. Please select one or ensure its use hasn't been exhausted.");
+        alert("No activatable boons are currently available.");
         return;
     }
 
     let boonToActivate;
-
-    // 3. Handle selection if multiple boons are available (simple prompt for now)
     if (activatableBoons.length > 1) {
         const boonNames = activatableBoons.map((name, index) => `${index + 1}: ${name}`).join('\n');
         const choice = prompt(`Select a boon to activate by entering the number:\n${boonNames}`);
         const choiceIndex = parseInt(choice) - 1;
-        
         if (isNaN(choiceIndex) || choiceIndex < 0 || choiceIndex >= activatableBoons.length) {
             alert("Invalid selection. Activation cancelled.");
             return;
@@ -463,219 +435,157 @@ function handleBoonActivation() {
         boonToActivate = activatableBoons[0];
     }
     
-    // 4. Apply Boon Effect
     let success = false;
     let effectMessage = "";
     let confirmTitle = "";
-    
-    // Get the boon description for the pop-up
     const fullBoonData = BOONS_DATA.find(b => b.name === boonToActivate);
 
     if (boonToActivate === "Delete Button") {
-        // Log the current boss as cleared with 0 score
         currentScore += 0;
-        // UPDATED: Changed 4 to 8
         const bossEntry = `[Score 0/8] ${currentBossToLog} (Cleared with Delete Button)`;
         rolledBosses.push(bossEntry);
-
         confirmTitle = `Boon Activated: ${boonToActivate}`;
-        effectMessage = `The boss **${currentBossToLog}** has been "insta-killed" and logged as a clear (0 penalty). A new boss has been rolled.`;
+        effectMessage = `The boss **${currentBossToLog}** has been "insta-killed" and logged as a clear.`;
         success = true;
-
     } else if (boonToActivate === "Jasmine’s Blessing (Legendary)") {
-        // Log the current boss as cleared with 0 score (Implicit clear)
         currentScore += 0;
-        // UPDATED: Changed 4 to 8
         const bossEntry = `[Score 0/8] ${currentBossToLog} (Cleared with Jasmine's Blessing)`;
         rolledBosses.push(bossEntry);
-
         confirmTitle = `Legendary Boon Activated: ${boonToActivate}`;
-        effectMessage = `Jasmine has traded places and cleared **${currentBossToLog}** (0 penalty). A new boss has been rolled.`;
+        effectMessage = `Jasmine has traded places and cleared **${currentBossToLog}**.`;
         success = true;
     }
     
-    // 5. Finalize Activation
     if (success) {
-        boonActivationUses[boonToActivate] = 0; // Consume the use
-        currentBossToLog = null; // Mark current boss as logged/cleared
-        
-        // Immediately roll the next boss
+        boonActivationUses[boonToActivate] = 0; 
+        currentBossToLog = null; 
         handleNextBossRollAfterActivation();
-
-        // Update UI
         updateRolledList();
         updateScoreDisplay();
         updateStatus(rotationSize);
-        updateBoonActivationButton(); // Update button state
-        
-        // **NEW: Show Confirmation Pop-up**
-        const alertContent = `${confirmTitle}\n\nEffect: ${fullBoonData.description}\n\nOutcome: ${effectMessage}`;
-        alert(alertContent);
+        updateBoonActivationButton(); 
+        alert(`${confirmTitle}\n\nEffect: ${fullBoonData.description}\n\nOutcome: ${effectMessage}`);
     }
 }
-
 
 function handleNextBossRollAfterActivation() {
     const rotationSize = parseInt(document.getElementById('boss-rotation-input').value);
-    
-    // 1. Check if rotation is complete after logging the boon-cleared boss
     if (rolledBosses.length >= rotationSize) {
-        updateCurrentBossDisplay(null); // Clears display and shows "Rotation Complete!"
+        updateCurrentBossDisplay(null);
         showFinalScoreModal(rotationSize);
-        document.getElementById('btn-quick-reroll').style.display = 'none';
-        document.getElementById('btn-roll-next').textContent = 'Boss beaten!';
-        document.getElementById('btn-roll-next').disabled = true;
         return;
     }
-
-    // 2. Roll the next boss
     const nextBoss = rollBossSingle(); 
-
     if (nextBoss) {
         currentBossToLog = nextBoss.name;
         updateCurrentBossDisplay(nextBoss);
-        // Ensure button text is correct
-        document.getElementById('btn-roll-next').textContent = 'Roll Next Boss';
     } else {
-         // If pool was empty
          updateCurrentBossDisplay(null); 
-         document.getElementById('btn-roll-next').textContent = 'Boss defeated!';
-         document.getElementById('btn-roll-next').disabled = true;
     }
 }
 
-
-/**
- * Toggles the visibility of the boon list.
- */
 function toggleBoonsDropdown() {
     const wrapper = document.getElementById('boon-list-master-wrapper');
     const icon = document.getElementById('toggle-icon');
-    
-    // Check current state (using the inline style set on the wrapper)
     if (wrapper.style.maxHeight === '0px' || wrapper.style.maxHeight === '') {
-        // Open the dropdown
         wrapper.style.maxHeight = wrapper.scrollHeight + "px";
-        icon.textContent = '▲'; // Change icon to up arrow
+        icon.textContent = '▲';
     } else {
-        // Close the dropdown
         wrapper.style.maxHeight = '0';
-        icon.textContent = '▼'; // Change icon to down arrow
+        icon.textContent = '▼';
     }
 }
-// --- END BOON LOGIC ---
 
-
-// --- SCOREBOARD UTILITIES (MODIFIED) ---
 function updateScoreDisplay() {
-const rotationInput = document.getElementById('boss-rotation-input');
-const rotationSize = parseInt(rotationInput.value);
-// UPDATED: Changed 4 to 8
-const maxPossibleScore = rotationSize * 8;
-document.getElementById('score-max').textContent = ` `;
-document.getElementById('score-current').textContent = `Current number of deaths: ${currentScore}`;
+    const rotationInput = document.getElementById('boss-rotation-input');
+    const rotationSize = parseInt(rotationInput.value);
+    document.getElementById('score-max').textContent = ` `;
+    document.getElementById('score-current').textContent = `Current number of deaths: ${currentScore}`;
 }
+
 function updateRolledList() {
-const listElement = document.getElementById('rolled-list');
-listElement.innerHTML = '';
-if (rolledBosses.length === 0) {
-listElement.innerHTML = '<li>No bosses rolled yet.</li>';
-return;
+    const listElement = document.getElementById('rolled-list');
+    listElement.innerHTML = '';
+    if (rolledBosses.length === 0) {
+        listElement.innerHTML = '<li>No bosses rolled yet.</li>';
+        return;
+    }
+    rolledBosses.forEach(bossEntry => {
+        const listItem = document.createElement('li');
+        listItem.textContent = bossEntry;
+        listElement.appendChild(listItem);
+    });
 }
-rolledBosses.forEach(bossEntry => {
-const listItem = document.createElement('li');
-listItem.textContent = bossEntry;
-listElement.appendChild(listItem);
-});
-}
-
-
-// --- BOSS POOL MANAGEMENT (UNCHANGED) ---
 
 function updateBossPoolStatus() {
-document.getElementById('boss-pool-status').textContent = `Total Bosses Available: ${bossPool.length}`;
+    document.getElementById('boss-pool-status').textContent = `Total Bosses Available: ${bossPool.length}`;
 }
 
 function getBossObjectByName(bossName) {
-// We search the full original list to find the object since the bossPool array might be modified by bans
-return bossesOriginal.find(boss => boss.name === bossName);
+    return bossesOriginal.find(boss => boss.name === bossName);
 }
 
 function updateBossPool(namesToRemove) {
-bossPool = bossPool.filter(boss => !namesToRemove.includes(boss.name));
-updateBossPoolStatus();
+    bossPool = bossPool.filter(boss => !namesToRemove.includes(boss.name));
+    updateBossPoolStatus();
 }
 
-/**
- * Renders the bossBanList as an unordered (bulleted) list.
- */
 function displayBossBanList() {
     const listContainer = document.getElementById('boss-ban-list');
     listContainer.innerHTML = '';
-    
     if (bossBanList.length === 0) {
         listContainer.innerHTML = '<p style="color: #0a3a7c; font-weight: normal;">No bosses currently banned.</p>';
         return;
     }
-
-    // Create the bulleted list (<ul>)
     const ul = document.createElement('ul');
-
     bossBanList.forEach(name => {
-        // Create the list item (<li>) for each boss
         const listItem = document.createElement('li');
         listItem.textContent = name;
         ul.appendChild(listItem);
     });
-
     listContainer.appendChild(ul);
 }
 
 function resetBossPool() {
-// This function is ONLY for the full game reset (clears all bans)
-bossPool = [...initialBosses];
-bossBanList.length = 0;
-updateBossPoolStatus();
-displayBossBanList();
+    bossPool = [...initialBosses];
+    bossBanList.length = 0;
+    updateBossPoolStatus();
+    displayBossBanList();
 }
 
-// --- CATEGORICAL BAN RANDOMIZER LOGIC (UNCHANGED) ---
-
+/**
+ * MODIFIED: Run Category Ban now uses manual inputs from the UI
+ */
 function runCategoryBan() {
-    // PREREQUISITE CHECK - Only need exclusion to be generated
     if (!isExclusionGenerated) {
         alert("Please generate the Initial Character Exclusion List first.");
         return;
     }
 
-    const banType = Math.random() < 0.5 ? 'Boss Bans' : 'Character Bans';
+    const banType = document.getElementById('ban-type-select').value;
+    const numToBanInput = parseInt(document.getElementById('manual-ban-count').value);
     const display = document.getElementById('category-ban-display');
 
-    if (banType === 'Boss Bans') {
-        // NEW LOGIC: Ban a random amount of bosses 10 to 20.
-        const minBan = 10;
-        const maxBan = 20; 
-        // Calculate a random number between minBan (inclusive) and maxBan (inclusive)
-        const numToBan = Math.floor(Math.random() * (maxBan - minBan + 1)) + minBan;
-        
-        // Ensure we don't try to ban more than available bosses
-        const bossesToBan = [];
+    if (isNaN(numToBanInput) || numToBanInput < 1) {
+        alert("Please enter a valid number of bans.");
+        return;
+    }
+
+    if (banType === 'Bosses') {
         const poolForBan = bossPool.filter(boss => !bossBanList.includes(boss.name));
+        const actualNumToBan = Math.min(numToBanInput, poolForBan.length);
+        const bossesToBan = [];
+
         if (poolForBan.length === 0) {
             display.textContent = "Ban: Bosses. (No bosses left to ban!)";
         } else {
-            const actualNumToBan = Math.min(numToBan, poolForBan.length);
-
             while (bossesToBan.length < actualNumToBan) {
                 const randomIndex = Math.floor(Math.random() * poolForBan.length);
                 const boss = poolForBan.splice(randomIndex, 1)[0];
-                if (!bossBanList.includes(boss.name)) {
-                    bossesToBan.push(boss.name);
-                    bossBanList.push(boss.name);
-                }
+                bossesToBan.push(boss.name);
+                bossBanList.push(boss.name);
             }
             
-            // Apply "No “Childe” Policy" boon effect for Childe boss ban
             if (activeBoons.includes("No “Childe” Policy") && !bossBanList.includes("Childe")) {
                 const childeBoss = getBossObjectByName("Childe");
                 if (childeBoss) {
@@ -686,33 +596,28 @@ function runCategoryBan() {
 
             updateBossPool(bossesToBan);
             displayBossBanList();
-            display.textContent = `Ban: Bosses. ${bossesToBan.length} bosses were added to the ban list. Total: ${bossBanList.length}`;
+            display.textContent = `Applied: ${bossesToBan.length} Boss Bans.`;
         }
     } else { // Character Bans
-        let numToBan = 8;
-        // Apply "Double Down" boon effect
+        let numToBan = numToBanInput;
         if (activeBoons.includes("Double Down")) {
             numToBan += 8;
         }
 
-        // Ensure we don't try to ban more than available characters
-        const charsToBan = [];
         const poolForBan = characterPool.filter(char => !exclusionList.includes(char));
+        const actualNumToBan = Math.min(numToBan, poolForBan.length);
+        const charsToBan = [];
+
         if (poolForBan.length === 0) {
             display.textContent = "Ban: Characters. (No characters left to ban!)";
         } else {
-            const actualNumToBan = Math.min(numToBan, poolForBan.length);
-
             while (charsToBan.length < actualNumToBan) {
                 const randomIndex = Math.floor(Math.random() * poolForBan.length);
                 const char = poolForBan.splice(randomIndex, 1)[0];
-                if (!exclusionList.includes(char)) {
-                    charsToBan.push(char);
-                    exclusionList.push(char);
-                }
+                charsToBan.push(char);
+                exclusionList.push(char);
             }
             
-            // Apply "No “Childe” Policy" boon effect for Tartaglia ban
             if (activeBoons.includes("No “Childe” Policy") && !exclusionList.includes("Childe")) {
                 exclusionList.push("Childe");
                 charsToBan.push("Childe");
@@ -720,284 +625,157 @@ function runCategoryBan() {
             
             updateCharacterPool(charsToBan);
             displayExclusionList();
-            display.textContent = `Ban: Characters. ${charsToBan.length} characters were added to the exclusion list. Total: ${exclusionList.length}`;
+            display.textContent = `Applied: ${charsToBan.length} Character Bans.`;
         }
     }
 
-    // Keep the Roll Ban Category button disabled after one successful roll
     document.getElementById('btn-roll-ban-category').disabled = true;
 }
 
-// --- CHARACTER POOL MANAGEMENT (UNCHANGED) ---
-
 function updateCharacterPoolStatus() {
-document.getElementById('current-pool-status').textContent = `Total Characters Available: ${characterPool.length}`;
+    document.getElementById('current-pool-status').textContent = `Total Characters Available: ${characterPool.length}`;
 }
 
 function updateCharacterPool(namesToRemove) {
-// Remove the used characters from the characterPool
-characterPool = characterPool.filter(char => !namesToRemove.includes(char));
-updateCharacterPoolStatus();
+    characterPool = characterPool.filter(char => !namesToRemove.includes(char));
+    updateCharacterPoolStatus();
 }
 
 function displayExclusionList() {
-const listElement = document.getElementById('exclusion-list');
-listElement.innerHTML = ''; // Clear existing list
-
-if (exclusionList.length === 0) {
-listElement.innerHTML = '<p style="color: #0a3a7c; font-weight: normal;">Enter the number of characters to exclude and click the button.</p>';
-// Hide unban button if the list is empty
-document.getElementById('btn-unban-selected').style.display = 'none';
-return;
-}
-
-exclusionList.forEach(name => {
-const charSpan = document.createElement('span');
-charSpan.className = 'char-name';
-charSpan.textContent = name;
-// The click handler toggles the 'selected' class
-charSpan.onclick = () => charSpan.classList.toggle('selected');
-listElement.appendChild(charSpan);
-});
-
-// Ensure the unban button is visible if there are characters in the list AND the list has been generated
-if (isExclusionGenerated) {
-    document.getElementById('btn-unban-selected').style.display = 'inline-block';
-}
+    const listElement = document.getElementById('exclusion-list');
+    listElement.innerHTML = ''; 
+    if (exclusionList.length === 0) {
+        listElement.innerHTML = '<p style="color: #0a3a7c; font-weight: normal;">Enter the number of characters to exclude and click the button.</p>';
+        document.getElementById('btn-unban-selected').style.display = 'none';
+        return;
+    }
+    exclusionList.forEach(name => {
+        const charSpan = document.createElement('span');
+        charSpan.className = 'char-name';
+        charSpan.textContent = name;
+        charSpan.onclick = () => charSpan.classList.toggle('selected');
+        listElement.appendChild(charSpan);
+    });
+    if (isExclusionGenerated) {
+        document.getElementById('btn-unban-selected').style.display = 'inline-block';
+    }
 }
 
 function resetCharacterPool() {
-// FIX: Use a Set to automatically remove any duplicate entries from the 
-// 'characters' array, ensuring a clean pool and fixing the reported bug.
-characterPool = Array.from(new Set(characters)); 
-exclusionList.length = 0;
-updateCharacterPoolStatus();
-displayExclusionList();
+    characterPool = Array.from(new Set(characters)); 
+    exclusionList.length = 0;
+    updateCharacterPoolStatus();
+    displayExclusionList();
 }
 
-
-// --- BOSS ROLL CORE LOGIC (MODIFIED) ---
-
-/**
- * Rolls a single boss, removes it from the pool (unless Boomerang Effect is active), and returns the boss object.
- * DOES NOT update the main UI display or log the score.
- */
 function rollBossSingle() {
-    if (bossPool.length === 0) {
-        return null;
-    }
+    if (bossPool.length === 0) return null;
     const randomIndex = Math.floor(Math.random() * bossPool.length);
     const rolledBoss = bossPool[randomIndex];
-    
-    // Remove from pool UNLESS Boomerang Effect is active
     if (!activeBoons.includes("Boomerang Effect")) {
         bossPool.splice(randomIndex, 1); 
-        updateBossPoolStatus(); // Update status only if removed
+        updateBossPoolStatus();
     }
-    
     return rolledBoss;
 }
 
-/**
- * Updates the UI display to show the boss that is waiting to be logged.
- */
 function updateCurrentBossDisplay(bossObject) {
     const bossNameElement = document.getElementById('boss-name');
     const parametersArea = document.getElementById('parameters-area');
-
     if (!bossObject) {
-        bossNameElement.textContent = (rolledBosses.length >= parseInt(document.getElementById('boss-rotation-input').value)) 
-                                    ? "Rotation Complete!" 
-                                    : "BOSS POOL EMPTY. Cannot roll new boss.";
+        bossNameElement.textContent = (rolledBosses.length >= parseInt(document.getElementById('boss-rotation-input').value)) ? "Rotation Complete!" : "BOSS POOL EMPTY.";
         parametersArea.innerHTML = "";
         document.getElementById('btn-quick-reroll').style.display = 'none';
-        document.getElementById('btn-roll-next').disabled = true; // Disable if no boss to log/roll
+        document.getElementById('btn-roll-next').disabled = true;
         return;
     }
-
-    // 1. Update UI
     bossNameElement.textContent = bossObject.name;
-    const bossObjectFull = getBossObjectByName(bossObject.name); // Ensure we get description from original list
+    const bossObjectFull = getBossObjectByName(bossObject.name);
     if (bossObjectFull && bossObjectFull.description) {
         parametersArea.innerHTML = `<p id="boss-parameters-title">Additional Challenge:</p><p id="boss-parameters-description">${bossObjectFull.description}</p>`;
     } else {
         parametersArea.innerHTML = "";
     }
-
-    // 2. Add flash animation
     bossNameElement.classList.remove('flash');
-    void bossNameElement.offsetWidth; // Trigger reflow
+    void bossNameElement.offsetWidth;
     bossNameElement.classList.add('flash');
-    
-    // 3. Update button visibility
     document.getElementById('btn-quick-reroll').style.display = 'inline-block';
     document.getElementById('btn-roll-next').disabled = false;
 }
 
-
 function handleBossRoll() {
-    // PREREQUISITE CHECK
     if (!isExclusionGenerated) {
-        alert("Please complete the setup in the left column first: Generate Exclusions.");
+        alert("Please complete the setup in the left column first.");
         return;
     }
-
     const rotationSize = parseInt(document.getElementById('boss-rotation-input').value);
-    
-    // A. HANDLE START OF ROTATION (First roll - NO log action required yet)
     if (!currentBossToLog) {
-        // Enforce a single roll on first click because no score has been selected for the first boss.
         const firstBoss = rollBossSingle();
-        
         if (firstBoss) {
             currentBossToLog = firstBoss.name;
             updateCurrentBossDisplay(firstBoss);
-            // Update button text to prompt for log action
             document.getElementById('btn-roll-next').textContent = 'Log Run & Roll Next Boss';
-        } else {
-            alert(`Boss Pool Empty. Cannot start rotation.`);
-            document.getElementById('boss-name').textContent = "BOSS POOL EMPTY. Cannot roll new boss.";
         }
         updateStatus(rotationSize);
         return; 
     }
-
-    // B. LOGGING AND BATCH ROLLING (Subsequent rolls)
-    
     const selectedScore = parseInt(document.querySelector('input[name="penalty_score"]:checked').value);
     const rollCountInput = document.getElementById('boss-roll-count');
     let rollsRequested = parseInt(rollCountInput.value);
     rollsRequested = (isNaN(rollsRequested) || rollsRequested < 1) ? 1 : rollsRequested;
-    
     currentScore += selectedScore;
-    const bossEntry = `[Score ${selectedScore}/8] ${currentBossToLog}`;
-    rolledBosses.push(bossEntry);
+    rolledBosses.push(`[Score ${selectedScore}/8] ${currentBossToLog}`);
     currentBossToLog = null;
-    
-    // 2. Check if rotation is now complete after logging Boss A
     if (rolledBosses.length >= rotationSize) {
-        updateCurrentBossDisplay(null); // Clears display and shows "Rotation Complete!"
+        updateCurrentBossDisplay(null);
         showFinalScoreModal(rotationSize);
-        document.getElementById('btn-quick-reroll').style.display = 'none';
-        document.getElementById('btn-roll-next').textContent = 'Rotation Complete!';
-        document.getElementById('btn-roll-next').disabled = true;
         return;
     }
-    
     let lastRolledBossObject = null;
-    // The number of bosses to roll in the batch is determined by 'rollsRequested'
-    const remainingSpots = rotationSize - rolledBosses.length;
-    const actualRolls = Math.min(rollsRequested, remainingSpots);
-
-    // Loop: Roll a boss (Boss B...N), log it immediately with the same score (except for the last one)
+    const actualRolls = Math.min(rollsRequested, rotationSize - rolledBosses.length);
     for (let i = 0; i < actualRolls; i++) {
         const rolledBoss = rollBossSingle(); 
-        
-        if (!rolledBoss) {
-            alert(`Boss Pool Empty. Only ${rolledBosses.length} bosses rolled out of ${rotationSize}.`);
-            break;
-        }
-
-        // Check if this is NOT the last boss in the batch
+        if (!rolledBoss) break;
         if (i < actualRolls - 1) { 
-            // Log it immediately (Boss B, C, etc.)
             currentScore += selectedScore;
-            const logEntry = `[Score ${selectedScore}/8] ${rolledBoss.name}`;
-            rolledBosses.push(logEntry);
-            
-            // If rotation is complete mid-batch
-            if (rolledBosses.length >= rotationSize) {
-                 actualRolls = i + 1; // Stop the loop
-                 break;
-            }
+            rolledBosses.push(`[Score ${selectedScore}/8] ${rolledBoss.name}`);
         } else {
-            // This is the last boss, it will be displayed and logged on the *next* button press
             lastRolledBossObject = rolledBoss;
         }
     }
-
-    // D. FINAL UI UPDATES
     if (lastRolledBossObject) {
         currentBossToLog = lastRolledBossObject.name;
         updateCurrentBossDisplay(lastRolledBossObject);
-    } else {
-         // If rotation was completed mid-batch or pool was empty
-         updateCurrentBossDisplay(null); 
     }
-    
     updateRolledList();
     updateScoreDisplay();
     updateStatus(rotationSize);
-    
-    // Ensure button text is correct
-    if (rolledBosses.length >= rotationSize) {
-        document.getElementById('btn-roll-next').textContent = 'Rotation Complete!';
-        document.getElementById('btn-quick-reroll').style.display = 'none';
-        document.getElementById('btn-roll-next').disabled = true;
-    } else {
-        document.getElementById('btn-roll-next').textContent = 'Log Run & Roll Next Boss';
-    }
 }
 
-
 function rerollBoss() {
-    // PREREQUISITE CHECK
     if (!isExclusionGenerated || !currentBossToLog) return;
-    
     const oldBossName = currentBossToLog;
-
-    // 1. Roll a new boss
     const newBoss = rollBossSingle();
-    
-    if (!newBoss) {
-        alert("Boss Pool is empty, cannot reroll.");
-        return;
-    }
-    
-    // 2. Update UI with the new boss (This also handles the flash effect)
+    if (!newBoss) return;
     updateCurrentBossDisplay(newBoss);
-
-    // 3. Put the old boss back into the pool, only if Boomerang Effect is NOT active (since it wouldn't have been removed in the first place if it was active)
     if (!activeBoons.includes("Boomerang Effect")) {
         const oldBossObject = getBossObjectByName(oldBossName);
-        if (oldBossObject && !bossPool.some(boss => boss.name === oldBossName)) {
+        if (oldBossObject) {
             bossPool.push(oldBossObject);
             updateBossPoolStatus();
         }
     }
-    
-    // 4. Update the state
     currentBossToLog = newBoss.name; 
-    lastRerolledBoss = oldBossName; // Keep track of the boss that was just rerolled
 }
 
 function resetRotationAndReroll() {
-    // PREREQUISITE CHECK - Only need exclusion to be generated
     if (!isExclusionGenerated) return;
-
-    // 1. Reset Boss/Score State
     resetBossRotation();
-    // The current bossPool (which contains category bans) is preserved.
-
-    updateStatus(document.getElementById('boss-rotation-input').value);
-    updateScoreDisplay();
-    
-    // Reset button text
-    document.getElementById('btn-quick-reroll').style.display = 'none';
-    
-    // 2. Roll the first boss of the new rotation
     const firstBoss = rollBossSingle();
-    
     if (firstBoss) {
         currentBossToLog = firstBoss.name;
         updateCurrentBossDisplay(firstBoss);
-        // Change button text to indicate the next action is a log
-        document.getElementById('btn-roll-next').textContent = 'Roll next boss';
-    } else {
-        document.getElementById('boss-name').textContent = "BOSS POOL EMPTY. Cannot roll new boss.";
-        document.getElementById('parameters-area').innerHTML = "";
-        document.getElementById('btn-roll-next').textContent = 'Rotation Complete!';
-        document.getElementById('btn-roll-next').disabled = true;
+        document.getElementById('btn-roll-next').textContent = 'Log Run & Roll Next Boss';
     }
 }
 
@@ -1005,448 +783,186 @@ function resetBossRotation() {
     rolledBosses.length = 0;
     currentScore = 0;
     currentBossToLog = null;
-    lastRerolledBoss = null;
     updateRolledList();
     updateScoreDisplay();
     updateStatus(document.getElementById('boss-rotation-input').value);
 }
 
-
-// --- CHARACTER ROLL LOGIC (MODIFIED) ---
-
 function randomizeCharacters(count) {
-    // PREREQUISITE CHECK - Only need exclusion to be generated
     if (!isExclusionGenerated) {
-        alert("Please complete the setup in the above column: Generate Exclusions.");
+        alert("Please complete setup first.");
         return;
     }
-
-    // 1. Clear previous squad and display
     currentRolledSquad.length = 0;
     const display = document.getElementById('character-display');
     display.innerHTML = '';
     const selectionMessage = document.getElementById('selection-message');
-    selectionMessage.textContent = "You must select at least 4 characters used before confirming.";
-    
-    // **NEW LOGIC START: Filter pool if 'Four-Star Impact' is active**
-    let poolToRollFrom = [...characterPool]; // Start with the full current pool
-    
-    // Check if the "Four-Star Impact" boon is active
+    let poolToRollFrom = [...characterPool]; 
     if (activeBoons.includes("Four-Star Impact")) {
-        // Filter out all known 5-star characters to enforce "4 star only" rolls
         poolToRollFrom = poolToRollFrom.filter(char => !fiveStarCharacters.includes(char));
-        selectionMessage.textContent = `"Four-Star Impact" active! Rolling only from the ${poolToRollFrom.length} available 4-star characters.`;
-        selectionMessage.style.display = 'block';
-    } else {
-        selectionMessage.style.display = 'none';
     }
-    // **NEW LOGIC END**
-
-    // MODIFIED LOGIC: Roll based on available pool size if it's less than the requested count (8)
     const actualRollCount = Math.min(count, poolToRollFrom.length);
-
-    // Check if the pool is empty (no characters available after filtering/elimination)
     if (actualRollCount === 0) {
-        display.innerHTML = '<p style="color: red; font-weight: bold;">Error: The character pool is empty. Reset lists to continue.</p>';
-        document.getElementById('btn-roll-chars').style.display = 'inline-block';
-        document.getElementById('btn-reroll-chars').style.display = 'none';
-        document.getElementById('btn-confirm-usage').disabled = true; 
+        display.innerHTML = '<p style="color: red;">Error: Character pool is empty.</p>';
         return;
     }
-
-    // 2. Randomize the squad (without replacement)
-    // Use the potentially filtered poolToRollFrom for the actual roll
     let tempPool = [...poolToRollFrom]; 
-    for (let i = 0; i < actualRollCount; i++) { // Use actualRollCount to ensure we only draw what's available
+    for (let i = 0; i < actualRollCount; i++) {
         const randomIndex = Math.floor(Math.random() * tempPool.length);
-        const charName = tempPool.splice(randomIndex, 1)[0];
-        currentRolledSquad.push(charName);
+        currentRolledSquad.push(tempPool.splice(randomIndex, 1)[0]);
     }
-
-    // 3. Render the new squad with actual images
     currentRolledSquad.forEach(name => {
-        const imagePath = CHAR_IMAGE_MAP[name] || CHAR_IMAGE_MAP["DEFAULT_PATH"];
-
-        // Create the card wrapper
         const charCard = document.createElement('div');
         charCard.className = 'character-card';
-
-        // Create the name span (char-name)
+        const imgContainer = document.createElement('div');
+        imgContainer.className = 'char-image-placeholder';
+        const imgElement = document.createElement('img');
+        imgElement.src = CHAR_IMAGE_MAP[name] || CHAR_IMAGE_MAP["DEFAULT_PATH"];
+        imgContainer.appendChild(imgElement);
         const charSpan = document.createElement('span');
         charSpan.className = 'char-name';
         charSpan.textContent = name;
-        
-        // Create the image placeholder container
-        const imgContainer = document.createElement('div');
-        imgContainer.className = 'char-image-placeholder';
-        
-        // Create the actual image element
-        const imgElement = document.createElement('img');
-        imgElement.src = imagePath;
-        imgElement.alt = name;
-        
-        // Append the image to the container
-        imgContainer.appendChild(imgElement);
-
-        // Add click handler to the card wrapper
         charCard.onclick = () => charCard.classList.toggle('selected');
-        
-        // Assemble the card
         charCard.appendChild(charSpan);
         charCard.appendChild(imgContainer); 
-        
-        // Append to display
         display.appendChild(charCard);
     });
-
-    // 4. Update button visibility (Hide Roll, Show Reroll, Enable Confirm)
     document.getElementById('btn-roll-chars').style.display = 'none';
     document.getElementById('btn-reroll-chars').style.display = 'inline-block';
     document.getElementById('btn-confirm-usage').disabled = false;
 }
 
 function rerollCharacters() {
-    // PREREQUISITE CHECK - Only need exclusion to be generated
-    if (!isExclusionGenerated) return;
-
-    const display = document.getElementById('character-display');
-    const selectionMessage = document.getElementById('selection-message');
-
-    if (currentRolledSquad.length === 0) {
-        selectionMessage.textContent = 'No squad has been rolled yet to reroll.';
-        selectionMessage.style.display = 'block';
-        return;
-    }
-
-    // Clear the old squad
-    currentRolledSquad.length = 0; 
-    
-    // 2. Inform the user and roll a new squad
-    display.innerHTML = '<p>Rerolling...</p>';
-    selectionMessage.style.display = 'none';
-    document.getElementById('btn-confirm-usage').disabled = true;
-
-    // This call uses the same logic as the initial roll, ensuring the "Four-Star Impact" boon filter is applied again.
     randomizeCharacters(8); 
 }
 
 function confirmUsedCharacters() {
-    // UPDATED: Look for the name inside the selected card (.character-card.selected)
     const selectedChars = Array.from(document.querySelectorAll('#character-display .character-card.selected .char-name')).map(el => el.textContent);
-    const selectionMessage = document.getElementById('selection-message');
-
-    if (selectedChars.length < 1) {
-        selectionMessage.textContent = `You must select at least 1 character used before confirming. (${selectedChars.length} selected)`;
-        selectionMessage.style.display = 'block';
-        return;
-    }
-
+    if (selectedChars.length < 1) return;
     let charsToEliminate = selectedChars;
-
-    // --- NEW LOGIC FOR "Four-Star Impact" BOON (Elimination Logic) ---
     if (activeBoons.includes("Four-Star Impact")) {
-        // Filter the selected characters: only keep 5-star characters (i.e., those NOT in the FOUR_STAR_CHARS list).
-        const fourStarsPreserved = selectedChars.filter(name => FOUR_STAR_CHARS.includes(name));
-        
-        // Note: Characters in charsToEliminate are 5-stars if the boon is active (based on the provided list)
         charsToEliminate = selectedChars.filter(name => !FOUR_STAR_CHARS.includes(name));
-        
-        if (charsToEliminate.length === 0) {
-            selectionMessage.textContent = `"Four-Star Impact" active. All ${fourStarsPreserved.length} selected characters are 4-stars and were preserved. Pool size remains unchanged.`;
-        } else {
-            selectionMessage.textContent = `"Four-Star Impact" active. ${charsToEliminate.length} 5-stars eliminated. ${fourStarsPreserved.length} 4-stars preserved.`;
-        }
-        selectionMessage.style.display = 'block';
     }
-    // --- END NEW LOGIC ---
-
-    // Remove selected characters from the main pool
-    if (charsToEliminate.length > 0) {
-        updateCharacterPool(charsToEliminate);
-    }
-    
-    // Clear the character display and squad
+    if (charsToEliminate.length > 0) updateCharacterPool(charsToEliminate);
     currentRolledSquad.length = 0;
-    document.getElementById('character-display').innerHTML = '<p>Character usage confirmed. Click "Roll Characters" to generate the next squad.</p>';
-    // If the boon wasn't active, ensure the generic selection message is hidden
-    if (!activeBoons.includes("Four-Star Impact")) {
-        selectionMessage.style.display = 'none';
-    }
-
-
-    // Reset button visibility (Show Roll, Hide Reroll, Disable Confirm)
+    document.getElementById('character-display').innerHTML = '<p>Usage confirmed.</p>';
     document.getElementById('btn-roll-chars').style.display = 'inline-block';
     document.getElementById('btn-reroll-chars').style.display = 'none';
     document.getElementById('btn-confirm-usage').disabled = true;
 }
 
-// --- NEW FUNCTION: Handles unbanning selected characters (UNCHANGED) ---
 function handleUnbanSelected() {
     const listElement = document.getElementById('exclusion-list');
-    // Get all selected character name elements
     const selectedSpans = Array.from(listElement.querySelectorAll('.char-name.selected'));
-    
-    if (selectedSpans.length === 0) {
-        alert("Please select at least one character in the exclusion list to unban.");
-        return;
-    }
-
+    if (selectedSpans.length === 0) return;
     const namesToUnban = selectedSpans.map(span => span.textContent);
-    
-    // 1. Remove from exclusionList
     const newExclusionList = exclusionList.filter(name => !namesToUnban.includes(name));
-
-    // Clear the global array and repopulate it with the remaining names
     exclusionList.length = 0; 
     exclusionList.push(...newExclusionList); 
-
-    // 2. Add to characterPool
-    namesToUnban.forEach(name => {
-        // Add back to the pool if it's not already there (safety)
-        if (!characterPool.includes(name)) {
-            characterPool.push(name);
-        }
-    });
-
-    // 3. Update UI
+    namesToUnban.forEach(name => { if (!characterPool.includes(name)) characterPool.push(name); });
     displayExclusionList();
     updateCharacterPoolStatus();
-    
-    alert(`${namesToUnban.length} character(s) unbanned and returned to the pool!`);
 }
 
-
-// --- NEW FUNCTION: Read and validate exclusion count (UNCHANGED)
 function handleGenerateExclusions() {
     const countInput = document.getElementById('exclusion-count-input');
     const count = parseInt(countInput.value);
-    
-    // If exclusions have already been generated, skip regeneration logic
-    if (isExclusionGenerated) {
-        alert("Exclusions have already been generated for this session. Use 'Unban Selected' or 'Reset Character Lists' to change.");
-        return;
-    } 
-
-    if (isNaN(count) || count < 1 || count > characterPool.length) {
-        alert(`Please enter a valid number between 1 and ${characterPool.length} for exclusion.`);
-        return;
-    }
-
+    if (isExclusionGenerated) return; 
+    if (isNaN(count) || count < 1 || count > characterPool.length) return;
     generateExclusionList(count); 
 }
 
-// --- MODIFIED CORE LOGIC: Accepts count as an argument (UNCHANGED)
 function generateExclusionList(count) {
-    if (characterPool.length < count) {
-        document.getElementById('exclusion-list').innerHTML = '<p style="color: red; font-weight: bold;">Not enough characters left to exclude. Reset the character lists & pool to continue.</p>';
-        return;
-    }
-
     let tempPool = [...characterPool];
     const newlyExcluded = [];
-
     for (let i = 0; i < count; i++) {
         const randomIndex = Math.floor(Math.random() * tempPool.length);
         const char = tempPool.splice(randomIndex, 1)[0];
         newlyExcluded.push(char);
         exclusionList.push(char);
     }
-    
-    // Apply "No “Childe” Policy" boon effect for initial ban
     if (activeBoons.includes("No “Childe” Policy") && !exclusionList.includes("Childe")) {
-        // Check if Childe is in the pool before trying to ban
-        if (characterPool.includes("Childe") || newlyExcluded.includes("Childe")) {
-             // If already in exclusion list, this is fine, otherwise add and remove from pool
-             if(!exclusionList.includes("Childe")) exclusionList.push("Childe");
-             if(newlyExcluded.includes("Childe")) newlyExcluded.splice(newlyExcluded.indexOf("Childe"), 1); // remove if randomly selected
-             newlyExcluded.push("Childe");
-        } else {
-             // If Childe is already used/removed, nothing happens
-        }
+        if (characterPool.includes("Childe")) exclusionList.push("Childe");
     }
-
-
-    // Remove the newly excluded characters from the pool
     updateCharacterPool(newlyExcluded);
-
-    // Update UI
     displayExclusionList();
-
-    // STATE PROGRESSION: Exclusions are done, unlock all main features
     isExclusionGenerated = true;
     document.getElementById('btn-generate-exclusions').disabled = true;
-    document.getElementById('btn-unban-selected').style.display = 'inline-block'; // Show Unban button
-    
-    // UNLOCK MAIN CHALLENGE BUTTONS DIRECTLY
     document.getElementById('btn-roll-next').disabled = false;
     document.getElementById('btn-roll-chars').disabled = false;
-    
-    // Enable the optional Ban Category roll. If "Fast Food Combo Meal" is active, it's auto-run below, but keep button disabled after 1 use.
     document.getElementById('btn-roll-ban-category').disabled = false; 
-
-    // Update main challenge messages
-    document.getElementById('boss-name').textContent = "Ready! Click 'Roll Next Boss / Log Run' to begin the rotation!";
-    document.getElementById('parameters-area').innerHTML = "";
-    document.getElementById('character-display').innerHTML = '<p>Click "Roll Characters" to generate a squad of 8. Select a minimum of 4 characters used from the rolled team to remove them from the pool.</p>';
-    
-    // Check for "Fast Food Combo Meal" boon and run ban phase immediately
-    if (activeBoons.includes("Fast Food Combo Meal")) {
-        runCategoryBan(); // Automatically runs the ban and disables the button
-    } else {
-        // Update category ban display message
-        document.getElementById('category-ban-display').textContent = 'Optional: Click "Roll Ban Category" for an extra challenge.';
-    }
-    
-    // Maximize roll count input based on rotation size
-    const rotationSize = parseInt(document.getElementById('boss-rotation-input').value);
-    document.getElementById('boss-roll-count').max = rotationSize;
+    document.getElementById('boss-name').textContent = "Ready! Click 'Roll Next Boss' to begin.";
+    document.getElementById('category-ban-display').textContent = 'Enter ban amount and click "Apply Bans".';
+    if (activeBoons.includes("Fast Food Combo Meal")) runCategoryBan();
 }
 
 function resetCharacterLists() {
     resetCharacterPool();
-    // Clear the character display and squad
     currentRolledSquad.length = 0;
-    document.getElementById('character-display').innerHTML = '<p>Click "Roll Characters" to generate a squad of 8. Select a minimum of 4 characters used from the rolled team to remove them from the pool.</p>';
-    document.getElementById('selection-message').style.display = 'none';
-
-    // Reset button visibility
     document.getElementById('btn-roll-chars').style.display = 'inline-block';
     document.getElementById('btn-reroll-chars').style.display = 'none';
     document.getElementById('btn-confirm-usage').disabled = true;
-    
-    // If game has started (exclusions were done), reset the exclusion generator state
-    if (isExclusionGenerated) {
-        setInitialGameLocks(); // This will put it back to the pre-exclusion state
-    }
+    if (isExclusionGenerated) setInitialGameLocks();
 }
 
-
-// --- MODAL LOGIC (MODIFIED) ---
-
 function showFinalScoreModal(rotationSize) {
-// UPDATED: Changed 4 to 8
-const maxPossibleScore = rotationSize * 8;
-const percentage = ((currentScore / maxPossibleScore) * 100).toFixed(1);
-
-document.getElementById('modal-score-current').textContent = currentScore;
-document.getElementById('modal-score-max').textContent = maxPossibleScore;
-document.getElementById('modal-score-percentage').textContent = `${percentage}% of Max Score`;
-
-// Open the modal
-document.getElementById('final-score-modal').classList.add('open');
+    const maxPossibleScore = rotationSize * 8;
+    const percentage = ((currentScore / maxPossibleScore) * 100).toFixed(1);
+    document.getElementById('modal-score-current').textContent = currentScore;
+    document.getElementById('modal-score-max').textContent = maxPossibleScore;
+    document.getElementById('modal-score-percentage').textContent = `${percentage}% of Max Score`;
+    document.getElementById('final-score-modal').classList.add('open');
 }
 
 function closeFinalScoreModal() {
-document.getElementById('final-score-modal').classList.remove('open');
-// After closing, automatically start a new rotation by using the non-ban-clearing reset
-resetRotationAndReroll();
+    document.getElementById('final-score-modal').classList.remove('open');
+    resetRotationAndReroll();
 }
 
-
-// --- GLOBAL RESET (UNCHANGED) ---
-
-/**
- * Disables all main action buttons until prerequisites are met (now only exclusion).
- */
 function updateStatus(rotationSize) {
     document.getElementById('rotation-status').textContent = `${rolledBosses.length}/${rotationSize} bosses done`;
 }
 
 function setInitialGameLocks() {
     isExclusionGenerated = false;
-    
-    // Disable main action buttons
     document.getElementById('btn-roll-next').disabled = true;
     document.getElementById('btn-quick-reroll').style.display = 'none'; 
     document.getElementById('btn-roll-chars').disabled = true;
-    document.getElementById('btn-confirm-usage').disabled = true;
-    document.getElementById('btn-roll-next').textContent = 'Roll Next Boss / Log Run'; // Reset button text
-
-    // Control setup flow
-    document.getElementById('btn-roll-ban-category').disabled = true; // Still disabled until exclusions are done
+    document.getElementById('btn-roll-ban-category').disabled = true; 
     document.getElementById('btn-generate-exclusions').disabled = false;
-    document.getElementById('btn-unban-selected').style.display = 'none'; // Hide Unban button initially
-
-    // Set locked messages
-    document.getElementById('boss-name').textContent = "🔒 Locked: Complete setup in the bans/score area first.";
-    document.getElementById('parameters-area').innerHTML = "";
-    document.getElementById('character-display').innerHTML = '<p style="color: #e64a19; font-weight: bold;">🔒 Locked: Complete exclusion setup first.</p>';
-    // UPDATED MESSAGE: Reflecting the custom input
-    document.getElementById('category-ban-display').textContent = 'Setup Step: Enter exclusion count and click "Generate Exclusions" to unlock rolls.';
-    
-    // Reset inputs
-    document.querySelector('input[name="penalty_score"][value="0"]').checked = true;
-    
-    // Update boon button state
+    document.getElementById('boss-name').textContent = "🔒 Locked: Complete setup first.";
+    document.getElementById('category-ban-display').textContent = 'Setup Step: Generate Exclusions to unlock bans.';
     updateBoonActivationButton();
 }
 
-
 function resetEntireGame() {
-    const isConfirmed = window.confirm("Are you sure you want to reset the ENTIRE game? This will clear all score, bans, and character rolls.");
-        
-    if (!isConfirmed) {
-        return;
-    }
-
-    // 1. Reset Boss/Score State (Full wipe including bans)
+    if (!window.confirm("Are you sure?")) return;
     resetBossRotation();
     resetBossPool();
-
-    // 2. Reset Character State (Full wipe including exclusions)
     resetCharacterLists();
-
-    // 3. Reset Boons
     activeBoons = [];
-    boonActivationUses = {};
     document.querySelectorAll('input[name="boon"]').forEach(checkbox => checkbox.checked = false);
-    handleBoonChange(); // Update the display
-
-    // 4. Reset UI Elements and Game Locks
+    handleBoonChange();
     setInitialGameLocks();
-    initializeApp(); // Re-run initialization to reset UI states like 'Total Characters Available'
-
-    console.log("The game has been reset!");
+    initializeApp();
 }
 
-
-// --- INITIALIZATION ---
-
 function initializeApp() {
-    // 1. Setup initial boss pool
     bossesOriginal = [...initialBosses];
     resetBossPool();
-    
-    // 2. Setup initial character pool
     resetCharacterPool(); 
-    
-    // 3. Set initial UI state
     const input = document.getElementById('boss-rotation-input');
-    input.value = Math.min(bossesOriginal.length, 12); 
+    input.value = 12; 
     updateStatus(input.value);
     updateRolledList(); 
     updateScoreDisplay(); 
-    
-    // 4. Render Boons
-    renderBoons(); // New call to render the boon list
-    
-    // 5. Apply initial locks
+    renderBoons(); 
     setInitialGameLocks();
-    
-    // 6. Set max value on exclusion input dynamically
-    const exclusionInput = document.getElementById('exclusion-count-input');
-    exclusionInput.max = characterPool.length;
-    // ensure initial value of 6 is valid, if not, reset it
-    if (parseInt(exclusionInput.value) > characterPool.length) {
-        exclusionInput.value = Math.min(6, characterPool.length);
-    }
-    
-    // Set max value on boss roll count input dynamically
-    document.getElementById('boss-roll-count').max = parseInt(input.value);
+    document.getElementById('exclusion-count-input').max = characterPool.length;
+    document.getElementById('boss-roll-count').max = 12;
 }
 
 document.addEventListener('DOMContentLoaded', initializeApp);
-
 </script>
 
 </body>
